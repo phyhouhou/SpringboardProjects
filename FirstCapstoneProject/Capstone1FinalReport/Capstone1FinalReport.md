@@ -532,7 +532,7 @@ We check duplicates and drop them.
 
 ## Cleaned Data
 
-Cleaned data is saved and uploaded here. Read my [data cleaing report](https://github.com/phyhouhou/springboard_projects/blob/master/data_cleaning_capstone_project.ipynb) for detailed data cleaning process.
+Cleaned data is saved and uploaded here. Read my [data cleaing report](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/data_cleaning_capstone_project.ipynb) for detailed data cleaning process.
 
 ```python
 crimes=pd.read_csv('crimes_clean.csv', parse_dates=['Date'],index_col='Date')
@@ -726,7 +726,7 @@ section.
 
 
 # Exploratory Data Analysis <a class="anchor" id="Findings"></a>
-We list some results from exploratory analysis. More details can be found in this [EDA report](https://github.com/phyhouhou/springboard_projects/blob/master/Exploratory_Data_Analysis_Capstone_Project.ipynb).
+We list some results from exploratory analysis. More details can be found in this [EDA report](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/Exploratory_Data_Analysis_Capstone_Project.ipynb).
 
 __Which type of crimes occur most frequently?__
 
@@ -796,7 +796,7 @@ crimes on Sundays on a weekly basis.
 
 A more detailed illustration is given in Fig: Crimes: WeekDay v.s. Weekend. The figure displays that dominant property crimes like ‘Theft’, ‘Burglary’ are more frequent during weekdays than weekends while violent crimes like ‘AggravatedAssault’, ‘Robbery’, ‘Rape’, ‘Murder’ are more likely to occur during weekends than weekdays.
 
-An immediate follow-up question is which day has a higher crime rate on average, weekday or weekend? Calculation shows that on average weekday has a higher crime rate than weekend. Is that statistically correct or just by chance? In order to figure out whether the average number of crime on weekday is significantly greater than that of weekend day, we use a permutation test with a test statistic of the difference of means to test this hypothesis and get a p-value close to 0. Therefore we reject the null hypothesis and conclude that weekday indeed has a higher crime rate than weekend. For details, read my [inferential statistic analysis](https://github.com/phyhouhou/springboard_projects/blob/master/Inferential_Statistic_Analysis_Captone_Project.ipynb). 
+An immediate follow-up question is which day has a higher crime rate on average, weekday or weekend? Calculation shows that on average weekday has a higher crime rate than weekend. Is that statistically correct or just by chance? In order to figure out whether the average number of crime on weekday is significantly greater than that of weekend day, we use a permutation test with a test statistic of the difference of means to test this hypothesis and get a p-value close to 0. Therefore we reject the null hypothesis and conclude that weekday indeed has a higher crime rate than weekend. For details, read my [inferential statistic analysis](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/Inferential_Statistic_Analysis_Captone_Project.ipynb). 
 
 ![WeekDay v.s. Weekend](images/wdayend.png)
 
@@ -813,7 +813,7 @@ a larger span of occurance during the day except the interval 4am-8am.
 
 It is expected that some beats have much higher crime rates than others. We want to know which beats have
 largest crime rates over the past 8 years. It’s shown in the figure below. The static data indicates dangerous
-zones but does not reveal the whole story. We need to check how it changes with time (Fig: Crimes of Top5 Ranked Beats). We find that ‘19G10’ has the most crimes during 2010-2011; then it was ‘12D10’ in 2012 and 2013; then it was ‘19G10’ again in 2014 and then ‘1A20’ afterwards. So the crimes rates in ‘19G10’ are decreasing. It’s worthwhile to figure out reasons behind that. In the meanwhile, it’s important to notice that beat ‘1A20’ has an increasing trend. We dig into types of crimes further and find that in ‘19G10’, ‘theft’ and ‘burglary’ are reduced a lot. And ‘theft’ rate is increasing in ‘1A20’. More details can be found in this [EDA report](https://github.com/phyhouhou/springboard_projects/blob/master/Exploratory_Data_Analysis_Capstone_Project.ipynb).
+zones but does not reveal the whole story. We need to check how it changes with time (Fig: Crimes of Top5 Ranked Beats). We find that ‘19G10’ has the most crimes during 2010-2011; then it was ‘12D10’ in 2012 and 2013; then it was ‘19G10’ again in 2014 and then ‘1A20’ afterwards. So the crimes rates in ‘19G10’ are decreasing. It’s worthwhile to figure out reasons behind that. In the meanwhile, it’s important to notice that beat ‘1A20’ has an increasing trend. We dig into types of crimes further and find that in ‘19G10’, ‘theft’ and ‘burglary’ are reduced a lot. And ‘theft’ rate is increasing in ‘1A20’. More details can be found in this [EDA report](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/Exploratory_Data_Analysis_Capstone_Project.ipynb).
 
 ![Top 5 Beats](images/top5beats.png)
 
@@ -1172,11 +1172,10 @@ Of particular interests is to combine [Harvey map](http://www.januaryadvisors.co
 
 # Deliverables <a class="anchor" id="Deliverables"></a>
 
-Read [data cleaing report](https://github.com/phyhouhou/springboard_projects/blob/master/data_cleaning_capstone_project.ipynb) for detailed data cleaning process.  
-Read [EDA report](https://github.com/phyhouhou/springboard_projects/blob/master/Exploratory_Data_Analysis_Capstone_Project.ipynb) for details and codes in exploratory data analysis.  
-Read [inferential analysis report](https://github.com/phyhouhou/springboard_projects/blob/master/Inferential_Statistic_Analysis_Captone_Project.ipynb) for details in inferential analysis part.  
-Read [build machine learning model](https://github.com/phyhouhou/springboard_projects/blob/master/Build_Machine_Learning_Models_Captone_Project.ipynb) for details about feature engineering and model evaluations.   
-
+Read [data cleaing report](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/data_cleaning_capstone_project.ipynb) for detailed data cleaning process.  
+Read [EDA report](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/Exploratory_Data_Analysis_Capstone_Project.ipynb) for details and codes in exploratory data analysis.  
+Read [inferential analysis report](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/Inferential_Statistic_Analysis_Captone_Project.ipynb) for details in inferential analysis part.  
+Read [build machine learning model](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/Build_Machine_Learning_Models_Captone_Project.ipynb) for details about feature engineering and model evaluations.   
 
 ---
  
