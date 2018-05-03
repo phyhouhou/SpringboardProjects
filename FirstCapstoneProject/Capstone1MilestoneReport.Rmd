@@ -65,11 +65,11 @@ We truncate dates to only include days in the range '2010-01-01' to '2017-12-31'
 We remove leading "'" and trailing ".0" in column 'Hour' and replace 24 with 0.  
 We remove trailing whitespaces and whitespaces between words in column 'OffenseType'.  
 We remove "'" and strip whitespaces in 'Beat' column.  
-We translate the HPD (Premise table)[http://www.houstontx.gov/police/cs/beatpages/premise.htm#] into a reduced dictionary by keeping only the first two digits in the premise type. This largely reduces the variaties of premise types (from 126 to 25). Then we convert descriptions in 'Premise' column by looking up the reduced dictionary if it finds a match otherwise keep the description as is. Certainly there are descriptions not translated, we can do it manually by selecing dominant ones according to its frequencies.  
+We translate the HPD [Premise table](http://www.houstontx.gov/police/cs/beatpages/premise.htm#) into a reduced dictionary by keeping only the first two digits in the premise type. This largely reduces the variaties of premise types (from 126 to 25). Then we convert descriptions in 'Premise' column by looking up the reduced dictionary if it finds a match otherwise keep the description as is. Certainly there are descriptions not translated, we can do it manually by selecing dominant ones according to its frequencies.  
 We clean 'Type', 'Suffix','OffenseNum' columns by stripping whitespaces.  
 We check duplicates and drop them.
 
-Finally cleaned data is saved and uploaded [here](https://file.io/eLoGQ3). Read my data [cleaing report](https://github.com/phyhouhou/springboard_projects/blob/master/data_cleaning_capstone_project.ipynb) for detailed data cleaning process.
+Finally cleaned data is saved and uploaded [here](https://file.io/eLoGQ3). Read my data [cleaing report](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/data_cleaning_capstone_project.ipynb) for detailed data cleaning process.
 
 
 ## Other potential datasets
@@ -78,7 +78,7 @@ It's also useful to find correlations between crimes and [weather conditions](ht
 
 
 # Initial findings
-We list some results from exploratory analysis. More details can be found in this [EDA report](https://github.com/phyhouhou/springboard_projects/blob/master/Exploratory_Data_Analysis_Capstone_Project.ipynb).
+We list some results from exploratory analysis. More details can be found in this [EDA report](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/Exploratory_Data_Analysis_Capstone_Project.ipynb).
 
 ## Time series analysis
 We perform a time series analysis for crime data and present it in Figure 1: 'Time Series of Crimes'.
@@ -188,11 +188,11 @@ It's shown that if we take the dummy classifer without resampling, we get a high
 What if we try to balance the classes by resampling the data? According to this plot, whether undersampling (indicated by '_rus') or oversampling (indicated by '_ros'), dummy classifer gave poorer accuracy. Even the decision tree method can't reach the accuracy of the dummy classifer without resampling. But metrics other than 'accuracy' is increased in decision tree classifers with resampling.
 
 # Deliverables
-Read data [cleaing report](https://github.com/phyhouhou/springboard_projects/blob/master/data_cleaning_capstone_project.ipynb) for detailed data cleaning process.
+Read data [cleaing report](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/data_cleaning_capstone_project.ipynb) for detailed data cleaning process.
 
-Read [EDA report](https://github.com/phyhouhou/springboard_projects/blob/master/Exploratory_Data_Analysis_Capstone_Project.ipynb) for details and codes in exploratory data analysis.
+Read [EDA report](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/Exploratory_Data_Analysis_Capstone_Project.ipynb) for details and codes in exploratory data analysis.
 
-Read [build machine learning model](https://github.com/phyhouhou/springboard_projects/blob/master/Build_Machine_Learning_Models_Captone_Project.ipynb) for detail about feature engineering and model evaluations.
+Read [build machine learning model](https://github.com/phyhouhou/SpringboardProjects/blob/master/FirstCapstoneProject/Build_Machine_Learning_Models_Captone_Project.ipynb) for detail about feature engineering and model evaluations.
 
 # Next steps
 ## How to improve accuracy?  
