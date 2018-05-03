@@ -1,0 +1,41 @@
+---
+title: "Ideas for the first capstone project"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Proposal 1: Fight against crime
+
+### 
+Problem: How has the crime rate changed over a 5/10-year period by region/state/city? Which types of crimes have increased and which has decreased and why? How is crime rate correlated with economic status (unemployment rate) and demographics (population change)? How is the change in crime rate (type-dependent) affected by the number of arrests and the number of police officers hired? 
+
+### Data:
+(1) [FBI crime data](https://ucr.fbi.gov/crime-in-the-u.s/)
+
+(2) [Bureau of Labor Statistics](https://www.bls.gov/data/)
+
+(3) [United states census data](https://www.census.gov/topics/population/data.html)
+
+
+## Proposal 2: Predict crime risk probability 
+ 
+### Problem: 
+Predict crime risk probability in a city by time, date and location based on historical crime data in the city. Other interesting questions include: what’s the correlation between crimes and weather and season; what are the common features among victims?
+
+### Data:
+(1) [Houston crime data](http://www.houstontx.gov/police/cs/beatpages/beat_stats.htm)
+
+(2) [NOAA weather data](https://www.ncdc.noaa.gov/)
+
+## Proposal 3: What toys to buy?
+
+### Problem: 
+What toys are most worth the money for buyers of different ages? What skills do the toy help to improve? What do the reviewers think of it? Cluster toys by its functions, prices and reviews. 
+
+### Data: 
+[Toy products on amazon](https://www.kaggle.com/PromptCloudHQ/toy-products-on-amazon)
