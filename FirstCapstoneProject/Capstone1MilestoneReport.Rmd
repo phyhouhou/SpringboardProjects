@@ -130,7 +130,8 @@ It is expected that some beats have much higher crime rates than others. We want
 
 ### What type of crimes tend to occur in our surroundings?
 We might stay at home or walk on the street, go to shopping malls...We experience various surroundings. Where is more crime susceptible? We visulize distribution of crimes in premises in Fig 9: 'Premise'.  
-![Premise](figs/premise.png)
+![Premise](figs/piechartPP.png)
+
 The figure shows that the Premise with code '20'(residential place) and '18' (parking lot) had the most frequent crimes.  
 Still remember high-crime-rate beats '19G10' and '1A20'? Let's check what surroundings there have most crimes and what types of crimes. Results are shown in Fig 10: 'topBeats'.
 
