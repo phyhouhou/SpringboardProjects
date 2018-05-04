@@ -23,7 +23,7 @@ Most importantly what message can we take from historical data to reduce crimes?
 precautions could be taken to minimize losses?   
 
 The police department gathered a lot of information over time about crimes in the city. We propose to use
-the HPD crime data to predict crime types based on historical crime data in the city.
+the HPD crime data to predict crime types based on historical crime data in the city. Codes for generating results mentioned in this report are available in [my Github](https://github.com/phyhouhou/SpringboardProjects/tree/master/FirstCapstoneProject). 
 
 # Clients <a class="anchor" id="Client"></a>
 
@@ -738,7 +738,7 @@ rather small portion.
 ![png](images/bartype.png)
 
 ## Time series analysis
-We perform a time series analysis for crime data and present it in the figure below. It highlights two drops which are pretty eye-catching. In June of 2014, crimes have a drastic decrease. Between the end of August and the beginning of September in 2017, crimes like ‘Theft’, ‘AutoTheft’, ‘AggravatedAssault’ and ‘Robbery’ had a significant drop while ‘Burglary’ offenses increased siginificantly. It’s really interesting to find out why. Could it be due to missing data? We have checked that there was no date that had missing record. There
+We perform a time series analysis for crime data. Time series trends per crime is illustrated in the figure below. It visualizes the number of crimes per each type on a daily basis. It highlights two drops which are pretty eye-catching. In June of 2014, crimes have a drastic decrease. Between the end of August and the beginning of September in 2017, crimes like ‘Theft’, ‘AutoTheft’, ‘AggravatedAssault’ and ‘Robbery’ had a significant drop while ‘Burglary’ offenses increased siginificantly. It’s really interesting to find out why. Could it be due to missing data? We have checked that there was no date that had missing record. There
 should be some reason behind it. It’s always meaningful to find out what can result in low crime rate. As a
 nonlocal resident I don’t know what big events happened during 2014 but I do know there was a devastating
 hurricane ‘Harvey’ on August 23 in 2017. It looks like that period just matched the low crime period in 2017.
