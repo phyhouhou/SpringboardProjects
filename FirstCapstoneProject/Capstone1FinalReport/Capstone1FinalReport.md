@@ -948,7 +948,6 @@ __A summary table__
 
 A summary table comparing accuracy for different classifiers is shown below. More detailed classification report can be found in Appendix: Classification Report. The scores are obtained by comparing predictions from trained model with corresponding test values.
 
-<div>
 <table border="0.6" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -1017,13 +1016,21 @@ A summary table comparing accuracy for different classifiers is shown below. Mor
       <td>0.68</td>
       <td>23.6</td>
     </tr>
+    <tr>
+      <th>LogReg_theft</th>
+      <td>0.68</td>
+      <td>0.68</td>
+      <td>0.68</td>
+      <td>0.68</td>
+      <td>23.6</td>
+    </tr>
   </tbody>
 </table>
 </div>
 
-In the summary table, ‘Dummy’ stands for dummy classifier using majority-class strategy; ‘DTree’ stands for
+In the summary table, ‘Dummy’ stands for dummy classifier using majority-class strategy; ‘DTree’ or 'DT' stands for
 decision tree with ‘Beat’ and ‘Address’ label encoded; ‘DT_rmAdres’ stands for decision tree with droping
-‘Address’ and one hot encoding ‘Beat’ and other categorical estimators.
+‘Address’ and one hot encoding ‘Beat’ and other categorical estimators. 'LogReg' stands for logistic regression.
 
 ![Compare Classifier](images/CompareClassifier.png)
 
@@ -1039,7 +1046,7 @@ Since ‘Theft’ takes quite a large portion in crimes, let’s relabel the cri
 
 ![Theft or Not](images/TheftorN.png)
 
-Decision tree classifier gives an accuracy of 68%, a 23.6% increase in accuracy compared to that of dummy classifier. 
+Decision tree classifier and logistic regression both give an accuracy of 68%, a 23.6% increase in accuracy compared to that of dummy classifier. 
 
 ## Predict Violent Crime/Property Crime
 
@@ -1090,6 +1097,14 @@ The results are shown in a summary table below. ‘Dmy_PorV’ is the dummy clas
       <td>1.2</td>
     </tr>
     <tr>
+      <th>LogReg_PorV</th>
+      <td>0.84</td>
+      <td>0.81</td>
+      <td>0.84</td>
+      <td>0.79</td>
+      <td>1.2</td>
+    </tr>
+    <tr>
       <th>Dmy_rus</th>
       <td>0.50</td>
       <td>0.25</td>
@@ -1104,6 +1119,14 @@ The results are shown in a summary table below. ‘Dmy_PorV’ is the dummy clas
       <td>0.66</td>
       <td>0.66</td>
       <td>-20.5</td>
+    </tr>
+    <tr>
+      <th>LogReg_rus</th>
+      <td>0.68</td>
+      <td>0.68</td>
+      <td>0.68</td>
+      <td>0.68</td>
+      <td>-18.1</td>
     </tr>
     <tr>
       <th>Dmy_ros</th>
@@ -1121,15 +1144,22 @@ The results are shown in a summary table below. ‘Dmy_PorV’ is the dummy clas
       <td>0.68</td>
       <td>-18.1</td>
     </tr>
+    <tr>
+      <th>LogReg_ros</th>
+      <td>0.68</td>
+      <td>0.68</td>
+      <td>0.68</td>
+      <td>0.68</td>
+      <td>-18.1</td>
+    </tr>
   </tbody>
 </table>
 </div>
 
 In the following figure, it’s shown that if we take the dummy classifer without resampling, we get a high accuracy
-determined by the portion of majority class. If we take the decision tree classifier, accuracy is slightly
-enhanced by 1.2%. What if we try to balance the classes by resampling the data? According to this plot,
+determined by the portion of majority class. If we take the decision tree classifier or the logistic regression, accuracy is slightly enhanced by 1.2%. What if we try to balance the classes by resampling the data? According to this plot,
 whether undersampling (indicated by ’_rus’) or oversampling (indicated by ’_ros’), dummy classifer gave
-poorer accuracy. Even the decision tree method can’t reach the accuracy of the dummy classifer without
+poorer accuracy. Even the decision tree or logistic regression method can’t reach the accuracy of the dummy classifer without
 resampling. But metrics other than ‘accuracy’ is increased in decision tree classifers with resampling. For
 instance, it increases precision by 16% (from 0.69 to 0.80).
 
@@ -1142,12 +1172,12 @@ We loaded raw data from HPD and performed data cleaning and data wrangling. We g
 about patterns/trends/importance of features and built machine learning models to predict types of crimes
 given predictors.  
 
-We visualized the performances of classifiers in view of accuracy. It shows that for predicting multi classifications, decision tress classifier can improve accuracy from 55% (achieved by dummy classifier, i.e., just predicting the majority class, that is, ‘Theft’) to 60%; If we reduce other crime types rather than ‘Theft’ as one type ‘Not Theft’, decision tree classifer achieve an accuracy of 68%, an increase by 24% compared to that of dummy classifer. 
+We visualized the performances of classifiers in view of accuracy. It shows that for predicting multi classifications, decision tress classifier can improve accuracy from 55% (achieved by dummy classifier, i.e., just predicting the majority class, that is, ‘Theft’) to 60%; If we reduce other crime types rather than ‘Theft’ as one type ‘Not Theft’, decision tree classifer and logistic regression achieve an accuracy of 68%, an increase by 24% compared to that of dummy classifer. 
 
 If we group crimes as ‘Property Crime’ (‘Theft’, ‘AutoTheft’, ‘Burglary’) and ‘Violent Crime’ (‘Assault’,
 ‘Murder’, ‘Rape’, ‘Robbery’), it is an unbalanced binary classification problem. We find that neither
 undersampling or oversampling improves the classification. The best prediction is given by decision tree
-calssifier without random sampling. It increases accuracy by 1.2% compared to dummy classifier. And it
+classifier and logistic regressor without random sampling. It increases accuracy by 1.2% compared to dummy classifier. And it
 increases precision by 16% (from 0.69 of dummy classifer to 0.80 by decision tree).
 
 
@@ -1334,25 +1364,44 @@ Report_DT_Theft :
     avg / total       0.68      0.68      0.68    249881
 
 
+Report_LR_Theft :
+
+                  precision    recall  f1-score   support
+    
+              N       0.66      0.62      0.64    112710
+              Y       0.70      0.74      0.72    137171
+    
+    avg / total       0.68      0.68      0.68    249881
+
 
 Report_dmy_PV: 
 
                   precision    recall  f1-score   support
     
-              N       0.00      0.00      0.00     42068
-              Y       0.83      1.00      0.91    207813
+              P       0.83      1.00      0.91    207813
+              V       0.00      0.00      0.00     42068
     
     avg / total       0.69      0.83      0.76    249881
 
+
+    
+Report_LR_PV :
+
+                  precision    recall  f1-score   support
+    
+              P       0.85      0.98      0.91    207813
+              V       0.64      0.13      0.22     42068
+    
+    avg / total       0.81      0.84      0.79    249881
 
 
 
 Report_DT_PV: 
 
-                  precision    recall  f1-score   support
+                 precision    recall  f1-score   support
     
-              N       0.55      0.18      0.27     42068
-              Y       0.85      0.97      0.91    207813
+              P       0.85      0.97      0.91    207813
+              V       0.56      0.17      0.27     42068
     
     avg / total       0.80      0.84      0.80    249881
 
@@ -1362,37 +1411,59 @@ Report_dmy_rus:
 
                   precision    recall  f1-score   support
     
-              N       0.00      0.00      0.00     42338
-              Y       0.50      1.00      0.66     41763
+              P       0.00      0.00      0.00     42338
+              V       0.50      1.00      0.66     41763
     
     avg / total       0.25      0.50      0.33     84101
 
 
 Report_DT_rus: 
+                
+                precision    recall  f1-score   support
+    
+              P       0.64      0.75      0.69     42338
+              V       0.69      0.58      0.63     41763
+    
+    avg / total       0.67      0.66      0.66     84101
+
+
+Report_LR_rus:
+
                   precision    recall  f1-score   support
     
-              N       0.67      0.64      0.66     42338
-              Y       0.65      0.69      0.67     41763
+              P       0.68      0.68      0.68     42338
+              V       0.68      0.67      0.67     41763
     
-    avg / total       0.66      0.66      0.66     84101
+    avg / total       0.68      0.68      0.68     84101
+
 
 
 Report_dmy_ros: 
 
                   precision    recall  f1-score   support
     
-              N       0.00      0.00      0.00    208040
-              Y       0.50      1.00      0.67    207620
+              P       0.50      1.00      0.67    207620 
+              V       0.00      0.00      0.00    208040
     
     avg / total       0.25      0.50      0.33    415660
  
 
 Report_DT_ros: 
-
-                  precision    recall  f1-score   support
+               
+               precision    recall  f1-score   support
     
-              N       0.71      0.60      0.65    208040
-              Y       0.65      0.75      0.70    207620
+              P       0.65      0.76      0.70    207620
+              V       0.71      0.60      0.65    208040
     
     avg / total       0.68      0.68      0.68    415660
+    
+Report_LR_ros :
+             
+             precision    recall  f1-score   support
+
+          P       0.67      0.69      0.68    207620
+          V       0.68      0.67      0.68    208040
+
+    avg / total       0.68      0.68      0.68    415660
+
  
