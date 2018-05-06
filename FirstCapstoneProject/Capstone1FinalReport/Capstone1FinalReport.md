@@ -34,8 +34,7 @@ and properties.
 
 # Data Acquisition and Cleaning <a class="anchor" id="Data"></a>
 
-The crime data is acquired from [HPD](http://www.houstontx.gov/police/cs/index-2.htm). The data is broken down by police districts and beats and shows
-reports of the following types of crimes: 
+The crime data is acquired from [HPD](http://www.houstontx.gov/police/cs/index-2.htm). The data is broken down by police districts and beats and shows reports of the following types of crimes: 
 
 * murder
 * rape
@@ -51,8 +50,7 @@ streetname, type and number of offenses. In this project, we will investigate th
 
 ## Cleaning and wrangling
 
-We download spreadsheets (a separate sheet for a month) from http://www.houstontx.gov/police/cs/index-2.
-htm. There are 96 spreadsheets in all for 2010-2017. We find that most spreadsheets have 10 columns: ‘Date’,
+We download spreadsheets (a separate sheet for a month) from http://www.houstontx.gov/police/cs/index-2.htm.  There are 96 spreadsheets in all for 2010-2017. We find that most spreadsheets have 10 columns: ‘Date’,
 ‘Hour’, ‘Offense Type’, ‘Beat’, ‘Premise’, ‘Block Range’, ‘Street Name’, ‘Type,’ ‘Suffix’, ‘# Of Offenses’ with
 some of them having alias.
 
