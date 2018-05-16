@@ -18,7 +18,7 @@
 researchers, managers, research centers, funding support institute
 
 
-# Proposal 2: 
+# Proposal 2
 
 ## Problem: What's the city talking about: topic modeling analysis of Reddit data
 
