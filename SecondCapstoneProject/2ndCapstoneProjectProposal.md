@@ -3,7 +3,7 @@
 
 
 ## Problem
-Nowadays people travel very often for business or for holidays. Travelers want to select hotels with clean rooms, high-quality service, convenient location etc. In a word they hope to find a cozy and cost-effective hotel to stay while traveling. Each person has its own taste of 'cozy'. Where are the perfect hotels to your taste located? What are other travelers saying about that hotel? Do the reviews cover what you care most about a living place? Are previous travelers having positive experience or bad one concerning that point? We propose to use hotel reviews data and perform text analysis and topic modeling using Naive Bayes and LDA. We also propose to build a machine learning model for predicting review scores from the features in the review data.
+Nowadays people travel very often for business or for holidays. Travelers want to select hotels with clean rooms, high-quality service, convenient location etc. In a word people hope to find a cozy and cost-effective hotel to stay while traveling. Each person has its own taste of 'cozy'. Where are the perfect hotels to your taste located? What are other travelers saying about that hotel? Do the reviews cover what you care most about a living place? Are previous travelers having positive experience or bad one concerning that point? We propose to use hotel reviews data and perform text analysis and topic modeling using Naive Bayes and LDA. We also propose to build a machine learning model for predicting review scores from the features in the review data.
 
 
 ## Client
