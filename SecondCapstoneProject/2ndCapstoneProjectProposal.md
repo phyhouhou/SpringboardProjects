@@ -1,6 +1,6 @@
 
 # Hotels Reviews: topic modeling and review score predictor
-***
+
 
 ## Problem
 Nowadays people travel a lot. Travelers want to avoid hotels with poor service, remote location etc. and hope to find a cozy hotel to stay while traveling. Each person has its own taste of 'cozy'. Where are the perfect hotels to your taste located? What are travelers saying about that hotel? Do the topics cover what you care most about a living place? Are the travelers having positive experience or bad one concerning that? We propose to use hotel reviews data and perform text analysis and topic modeling using Naive Bayes and LDA. We also propose to build a machine learning model for predicting review scores from the features in the review data.
