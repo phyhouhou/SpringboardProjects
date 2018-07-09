@@ -57,23 +57,6 @@ hotel.head()
     memory usage: 66.9+ MB
 
 
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -338,29 +321,6 @@ plt.ylabel('Hotel City');
 
 Over 50% of the hotels are from London, United Kingdom; hotels from other countries (Spain, France, Netherlands, Austria, Italy) take around 11% or less in portion.
 
-***Extract days from 'days_since_review'***
-
-
-
-
-```python
-hotel.days_since_review.describe()
-```
-
-
-
-
-    count    515212.000000
-    mean        354.400474
-    std         208.908943
-    min           0.000000
-    25%         175.000000
-    50%         353.000000
-    75%         527.000000
-    max         730.000000
-    Name: days_since_review, dtype: float64
-
-
 
 ***Add month and day of reviews***
 
@@ -497,19 +457,6 @@ htl_clean.select_dtypes(include='object').describe()
 
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -616,23 +563,8 @@ In next section, we will perform exploratory data analysis and gain insights on 
 htl_clean.select_dtypes(include='object').describe()
 ```
 
-
-
-
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -724,19 +656,6 @@ htl_clean.select_dtypes(exclude='object').describe()
 
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -907,19 +826,6 @@ sns.heatmap(corr,annot=True,linewidths=0.4,annot_kws={'size':16});
 We determine the most popular hotels by considering its 'Average_Score' and 'Total_Number_of_Reviews'. That is the 'Total_Number_of_Reviews' should be more than a threshold so that hotels with few number of reviews but high score won't be considered as popular. We then rank hotels by its average score.
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -1115,14 +1021,14 @@ The average reviewer score of hotels is higher in January and low in October.
 ![png](output_106_0.png)
 
 
-###### 'Trip_Type' v.s. 'Reviewer_Score'
+**'Trip_Type' v.s. 'Reviewer_Score'**
 
 ![png](output_108_0.png)
 
 
 Reviewers on a leisure trip tend to rate higher than those on a business trip. It would be interesting to investigate what topics reviewers on leisure trip and business trip are content or complaining about.
 
-###### 'Traveler_Type' v.s. 'Reviewer_Score'
+**Traveler_Type' v.s. 'Reviewer_Score'**
 
 ![png](output_111_0.png)
 
@@ -1132,14 +1038,9 @@ Reviewers on a leisure trip tend to rate higher than those on a business trip. I
 ![png](output_114_0.png)
 
 
-###### How is 'Num_Nights' affecting reviewer score?
+**How is 'Num_Nights' affecting reviewer score?**
 
-<script>requirejs.config({paths: { 'plotly': ['https://cdn.plot.ly/plotly-latest.min']},});if(!window.Plotly) {{require(['plotly'],function(plotly) {window.Plotly=plotly;});}}</script>
-
-
-
-<div id="2e90a572-3ed6-4ddb-9475-6ebe7809c2f6" style="height: 525px; width: 100%;" class="plotly-graph-div"></div><script type="text/javascript">require(["plotly"], function(Plotly) { window.PLOTLYENV=window.PLOTLYENV || {};window.PLOTLYENV.BASE_URL="https://plot.ly";Plotly.newPlot("2e90a572-3ed6-4ddb-9475-6ebe7809c2f6", [{"type": "scatter", "x": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31], "y": [8.403689462890396, 8.387382014663128, 8.428627254298691, 8.414234554972593, 8.338668459986788, 8.326973549313253, 8.293190740490038, 8.221016813450715, 8.150812064965205, 8.185907553551312, 8.056354916067141, 8.165506329113915, 7.743495934959347, 8.056680161943312, 7.8333333333333375, 7.898245614035089, 7.764285714285713, 8.127272727272727, 7.9241379310344815, 8.778947368421052, 7.7782608695652184, 7.510000000000001, 7.76, 7.933333333333334, 8.628571428571428, 5.4142857142857155, 8.681818181818182, 9.0, 8.0, 8.872727272727273, 10.0]}], {"title": "Reviewer_Score v.s. Num_Nights", "xaxis": {"title": "Num_Nights"}, "yaxis": {"title": "Reviewer_Score"}}, {"showLink": true, "linkText": "Export to plot.ly"})});</script>
-
+![png](output_117_0.png)
 
 Since very few portion of travelers stayed in hotel for more than two weeks, if we focus on the range where 'Num_Nights'<14, the curve above indicates that on average the longer traveler stayed the lower the score they give. This can be visualized more clearly in next plot.
 
@@ -1196,19 +1097,6 @@ The above two figures indicate that the longer (shorter) the positive review is,
 We find the top nations by checking that its number of reviews is above its median and then sort the score and number of reviews from high to low.
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
