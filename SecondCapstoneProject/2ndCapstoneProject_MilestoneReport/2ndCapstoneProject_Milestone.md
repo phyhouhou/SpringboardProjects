@@ -3,7 +3,7 @@
 
 * [Introduction](#Introduction)
 * [Client](#Client)
-* [Data](#Data)
+* [Load Data](#Load-Data)
 * [Data Wrangling and Cleaning](#Data-Wrangling-and-Cleaning)
     * [Missing Values](#Missing-Values)
     * [Check and Drop Duplicates](#Check-and-Drop-Duplicates)
@@ -22,7 +22,7 @@ Nowadays, people travel very often for business or for holidays. Travelers want 
 ## Client <a class="anchor" id="Client"></a>
 Travelers will certainly be interested in this project. They might spend lots of time searching/reading/evaluating hotels and the reviews. This project will save a vast amount of time for travelers. Hotel owners are eager to know what customers are talking and especially caring about the hotels. This project can help them improve service quality and maximize their business profit. Other potential clients include travel service agencies and housing agencies etc.
 
-## Data <a class="anchor" id="Data"></a>
+## Load Data <a class="anchor" id="Load-Data"></a>
 The dataset is originally from [kaggle](https://www.kaggle.com/jiashenliu/515k-hotel-reviews-data-in-europe). It is about 515K hotel reviews data in Europe. It's a csv file containing information on hotel name, hotel address, review date, review scores, reviewers' nationality, positive/negative reviews' word count etc.
 
 The data can be enriched by adding hotel features acquired from, for instance, trip advisor etc.
