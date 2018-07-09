@@ -3,17 +3,17 @@
 
 * [Introduction](#Introduction)
 * [Client](#Client)
-* [Load Packages and Data](#Load-Packages-and-Data)
+* [Data](#Data)
 * [Data Wrangling and Cleaning](#Data-Wrangling-and-Cleaning)
     * [Missing Values](#Missing-Values)
     * [Check and Drop Duplicates](#Check-and-Drop-Duplicates)
-    * [Cleaning and Enriching Features](#Cleaning-and-Enriching-Features)
+    * [Clean and Enrich Features](#Clean-and-Enrich-Features)
     * [Summary](#Summary)
 * [Exploratory Data Analysis](#Exploratory-Data-Analysis)
     * [Summary Statistics](#Summary-Statistics)
     * [Visualization of Hotels](#Visualization-of-Hotels)
     * [Visualization of Reviewers](#Visualization-of-Reviewers)
-    * [Visualization of Reviews](#NLP-of-Text-Data)
+    * [Visualization of Reviews](#Visualization-of-Reviews)
 * [Next Steps](#Next-Steps)
 
 ## Introduction <a class="anchor" id="Introduction"></a>
@@ -542,7 +542,7 @@ There are 515212 reviews for hotels located in 6 cities of 6 countries in Europe
 Notice that there are 1492 unique hotel names but with 1493 hotel addresses. Let's find out which hotel name has multiple addresses. We find that the hotel named 'Hotel Regina' is located in Barcelona and one with the same name but located in Vienna and another one located in Milan. Is there any hotel address with multiple names? On the other hand, two hotels ('The Grand at Trafalgar Square' and 'Club Quarters Hotel Trafalgar Square') are located in the same location. Perhaps they are the same hotel that changed name? We've checked that there are reviews from 2015 to 2017 for both hotels with different average score, so it's indeed reviewed as two distinct hotels. When we count hotels in the following, we will distinguish 'Hotel_Address' for those two hotels on purpose to avoid mismatching problems.
 
 
-### Summary
+### Summary <a class="anchor" id="Summary"></a> 
 
 In summary,
 
