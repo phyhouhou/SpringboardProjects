@@ -16,13 +16,13 @@
     * [Visualization of Reviews](#NLP-of-Text-Data)
 * [Next Steps](#Next-Steps)
 
-## Introduction
+## Introduction <a class="anchor" id="Introduction"></a>
 Nowadays, people travel very often for business or for holidays. Travelers want to select hotels with clean rooms, high-quality service, convenient location etc. In a word, people hope to find a cozy and cost-effective hotel to stay while traveling. A massive amount of reviews are being posted online and people are influenced by online reviews in making their decisions. Each person has its own taste of 'cozy'. Where are the perfect hotels to your taste located? What are other travelers saying about that hotel? Are previous travelers having positive experience or bad one concerning your needs? We propose to investigate hotel reviews data and perform text analysis and topic modeling using Naive Bayes and LDA. We also propose to build a machine learning model for predicting review scores from the features we have in the data.
 
-## Client
+## Client <a class="anchor" id="Client"></a>
 Travelers will certainly be interested in this project. They might spend lots of time searching/reading/evaluating hotels and the reviews. This project will save a vast amount of time for travelers. Hotel owners are eager to know what customers are talking and especially caring about the hotels. This project can help them improve service quality and maximize their business profit. Other potential clients include travel service agencies and housing agencies etc.
 
-## Data
+## Data <a class="anchor" id="Data"></a>
 The dataset is originally from [kaggle](https://www.kaggle.com/jiashenliu/515k-hotel-reviews-data-in-europe). It is about 515K hotel reviews data in Europe. It's a csv file containing information on hotel name, hotel address, review date, review scores, reviewers' nationality, positive/negative reviews' word count etc.
 
 The data can be enriched by adding hotel features acquired from, for instance, trip advisor etc.
@@ -206,13 +206,13 @@ hotel.head()
 * Feature 'days_since_review' (2 days for instance) should be split and only keep the numerics.<br> 
 * Missing values in 'lat' and 'lng'  and nowhere else.<br>
 
-## Data Wrangling and Cleaning
+## Data Wrangling and Cleaning <a class="anchor" id="Data-Wrangling-and-Cleaning"></a>
 The data wrangling and cleaning includes:<br>
 * Check and handle missing values
 * Check and Drop Duplicates
 * Clean and Enrich Features
 
-### Missing Values
+### Missing Values <a class="anchor" id="Missing-Values"></a>
 
 
 ```python
@@ -242,7 +242,7 @@ hotel.isnull().sum()/len(hotel)
     dtype: float64
 
 
-####  Visualize Hotels with Missing 'lat' and 'lng'
+####  Visualize Hotels with Missing 'lat' and 'lng' 
 
 
 ```python
@@ -283,7 +283,7 @@ sns.countplot(y='Hotel_Name',hue='Average_Score',data=hotel_noloc,palette='Reds'
 
 In this data set, 0.6% of the observations have missing 'lat' and 'lng'. That is 17 unique hotels (around 1% of the hotels) have hotel names and addresses but no geo-coordinates. Since there is no particular patterns and those coordinates will only be used for map visualization, we'll drop those hotels without coordinates when we plot the map. We can still keep all of them in other analysis.
 
-### Check and Drop Duplicates
+### Check and Drop Duplicates <a class="anchor" id="Check-and-Drop-Duplicates"></a>
 
 
 ```python
@@ -292,7 +292,7 @@ hotel.duplicated().sum()
 
 There are 526 duplicates in the data frame and we've removed them for the following analysis.
 
-### Clean and Enrich Features
+### Clean and Enrich Features <a class="anchor" id="Clean-and-Enrich-Features"></a>
 
 This process includes:<br>
 * Extract cities of hotels from its address, i.e., 'Hotel_Address';
@@ -552,9 +552,9 @@ In summary,
 
 In next section, we will perform exploratory data analysis and gain insights on how those features are correlated with review scores. 
 
-## Exploratory Data Analysis
+## Exploratory Data Analysis <a class="anchor" id="Exploratory-Data-Analysis"></a>
 
-### Summary Statistics
+### Summary Statistics <a class="anchor" id="Summary-Statistics"></a>
 
 **Summary statistics of 'object' columns**
 
@@ -812,7 +812,7 @@ sns.heatmap(corr,annot=True,linewidths=0.4,annot_kws={'size':16});
 ![png](output_78_0.png)
 
 
-### Visualization of Hotels
+### Visualization of Hotels <a class="anchor" id="Visualization-of-Hotels"></a>
 
 **Make a heatmap in order to see where the most hotels are located**
 
@@ -1048,7 +1048,7 @@ Since very few portion of travelers stayed in hotel for more than two weeks, if 
 ![png](output_119_0.png)
 
 
-### Visualization of Reviewers
+### Visualization of Reviewers <a class="anchor" id="Visualization-of-Reviewers"></a>
 
 
 ![png](output_121_0.png)
@@ -1172,7 +1172,7 @@ We find the top nations by checking that its number of reviews is above its medi
 </div>
 
 
-### Visualization of Reviews
+### Visualization of Reviews <a class="anchor" id="Visualization-of-Reviews"></a>
 
 
 ```python
@@ -1254,7 +1254,7 @@ Reviewers are commenting on 'room', 'location', 'transportation', 'air condition
 ![png](output_160_0.png)
 
 
-## Next Steps
+## Next Steps <a class="anchor" id="Next-Steps"></a>
 
 ### Extract Features from Text Data 
 ### Topic Modeling and Text Classification
