@@ -253,7 +253,7 @@ plt.xlabel('Count');
 ```
 
 
-![png](output_13_0.png)
+![png](img/output_13_0.png)
 
 
 
@@ -266,7 +266,7 @@ plt.ylabel('Count');
 ```
 
 
-![png](output_14_0.png)
+![png](img/output_14_0.png)
 
 
 
@@ -278,7 +278,7 @@ sns.countplot(y='Hotel_Name',hue='Average_Score',data=hotel_noloc,palette='Reds'
 ```
 
 
-![png](output_15_0.png)
+![png](img/output_15_0.png)
 
 
 In this data set, 0.6% of the observations have missing 'lat' and 'lng'. That is 17 unique hotels (around 1% of the hotels) have hotel names and addresses but no geo-coordinates. Since there is no particular patterns and those coordinates will only be used for map visualization, we'll drop those hotels without coordinates when we plot the map. We can still keep all of them in other analysis.
@@ -316,7 +316,7 @@ plt.ylabel('Hotel City');
 ```
 
 
-![png](output_25_0.png)
+![png](img/output_25_0.png)
 
 
 Over 50% of the hotels are from London, United Kingdom; hotels from other countries (Spain, France, Netherlands, Austria, Italy) take around 11% or less in portion.
@@ -334,7 +334,7 @@ plt.ylabel('Count');
 ```
 
 
-![png](output_33_0.png)
+![png](img/output_33_0.png)
 
 
 ```python
@@ -345,7 +345,7 @@ plot_bar(htl_wday,'Review_Posted_Day',0)
 ```
 
 
-![png](output_35_0.png)
+![png](img/output_35_0.png)
 
 
 Reviews posted on Tuesdays are the most among days of the week while reviews posted on Fridays are the least.
@@ -362,7 +362,7 @@ plt.title('Distribution of Word Counts of Reviews');
 ```
 
 
-![png](output_38_0.png)
+![png](img/output_38_0.png)
 
 
 
@@ -372,7 +372,7 @@ plt.xlabel('Pos_Rev_WCRatio');
 ```
 
 
-![png](output_45_0.png)
+![png](img/output_45_0.png)
 
 
 'Pos_Rev_WCRatio' is defined by number of words in positive reviews divided by sum of number of words in both positive and negative reviews. 'Pos_Rev_WCRatio' close to zero means that reviewers posted negative words and rarely positive words;  Pos_Rev_WCRatio' close to 1 indicates that reviewers are very satisfied.
@@ -406,7 +406,7 @@ plot_bar(htl_ttype,'Trip Type')
 ```
 
 
-![png](output_49_0.png)
+![png](img/output_49_0.png)
 
 
 
@@ -418,14 +418,14 @@ plot_bar(htl_traveler_type,'Traveler Type',30)
 ```
 
 
-![png](output_50_0.png)
+![png](img/output_50_0.png)
 
 
 Most of travelers are couples or solo travelers. 
 
 
 
-![png](output_52_0.png)
+![png](img/output_52_0.png)
 
 
 Over half of solo travelers stayed in hotels due to business trip otherwise majority of travelers stayed in hotels due to leisure trip.
@@ -440,7 +440,7 @@ plt.ylabel('Percent (%)');
 ```
 
 
-![png](output_55_0.png)
+![png](img/output_55_0.png)
 
 
 Most of travelers stayed less than a week in hotels and only very few stayed around a month in a hotel.
@@ -809,14 +809,14 @@ sns.heatmap(corr,annot=True,linewidths=0.4,annot_kws={'size':16});
 ```
 
 
-![png](output_78_0.png)
+![png](img/output_78_0.png)
 
 
 ### Visualization of Hotels <a class="anchor" id="Visualization-of-Hotels"></a>
 
 **Make a heatmap in order to see where the most hotels are located**
 
-![png](hotel.png)
+![png](img/hotel.png)
 
 
 
@@ -975,7 +975,7 @@ sns.countplot(x='Average_Score',data=htl_clean,color='c');
 ```
 
 
-![png](output_94_0.png)
+![png](img/output_94_0.png)
 
 
 
@@ -987,7 +987,7 @@ plt.title('Quantile Plot');
 ```
 
 
-![png](output_95_0.png)
+![png](img/output_95_0.png)
 
 
 The average score is above 5 and its mean is 8.4. 
@@ -1001,11 +1001,11 @@ sns.boxplot(y="Hotel_City",x="Reviewer_Score",data=htl_clean,showfliers=False,pa
 ```
 
 
-![png](output_98_0.png)
+![png](img/output_98_0.png)
 
-![png](output_100_0.png)
+![png](img/output_100_0.png)
 
-![png](output_101_0.png)
+![png](img/output_101_0.png)
 
 
 The average reviewer score of hotels is higher in January and low in October.
@@ -1015,32 +1015,32 @@ The average reviewer score of hotels is higher in January and low in October.
 **Distribution of Reviewer Score**
 
 
-![png](output_105_0.png)
+![png](img/output_105_0.png)
 
 
-![png](output_106_0.png)
+![png](img/output_106_0.png)
 
 
 **'Trip_Type' v.s. 'Reviewer_Score'**
 
-![png](output_108_0.png)
+![png](img/output_108_0.png)
 
 
 Reviewers on a leisure trip tend to rate higher than those on a business trip. It would be interesting to investigate what topics reviewers on leisure trip and business trip are content or complaining about.
 
 **Traveler_Type' v.s. 'Reviewer_Score'**
 
-![png](output_111_0.png)
+![png](img/output_111_0.png)
 
 'Solo traveler' tends to rate lowly while couples tend to rate highly.
 
 
-![png](output_114_0.png)
+![png](img/output_114_0.png)
 
 
 **How is 'Num_Nights' affecting reviewer score?**
 
-![png](output_117_0.png)
+![png](img/output_117_0.png)
 
 Since very few portion of travelers stayed in hotel for more than two weeks, if we focus on the range where 'Num_Nights'<14, the curve above indicates that on average the longer traveler stayed the lower the score they give. This can be visualized more clearly in next plot.
 
@@ -1051,19 +1051,19 @@ Since very few portion of travelers stayed in hotel for more than two weeks, if 
 ### Visualization of Reviewers <a class="anchor" id="Visualization-of-Reviewers"></a>
 
 
-![png](output_121_0.png)
+![png](img/output_121_0.png)
 
 
 Reviewers from United Kingdom take almost a half of the total number of reviewers. Interestingly other top nationality reviewers are from countries where hotels are not located except Netherlands.
 
 
-![png](output_123_0.png)
+![png](img/output_123_0.png)
 
 
 Reviewer score in January and February on average are higher than other months.
 
 
-![png](output_125_0.png)
+![png](img/output_125_0.png)
 
 
 Weekday doesn't seem to affect the reviewer score.
@@ -1071,7 +1071,7 @@ Weekday doesn't seem to affect the reviewer score.
 **Reviewer_score v.s. Total_Number_of_Reviews_Reviewer_Has_Given**
 
 
-![png](output_128_0.png)
+![png](img/output_128_0.png)
 
 The figure indicates that the more reviews reviewers posted, the higher rating score reviewers tend to give.
 
@@ -1079,10 +1079,10 @@ The figure indicates that the more reviews reviewers posted, the higher rating s
 **Longer Reviews Indicate Higher Score or Lower Score?**
 
 
-![png](output_131_0.png)
+![png](img/output_131_0.png)
 
 
-![png](output_132_0.png)
+![png](img/output_132_0.png)
 
 
 The above two figures indicate that the longer (shorter) the positive review is, the higher reviewers tend to rate the score.
@@ -1090,7 +1090,7 @@ The above two figures indicate that the longer (shorter) the positive review is,
 
 **Make a heatmap to see where the most reviewers are from**
 
-![png](reviewer.png)
+![png](img/reviewer.png)
 
 
 **Top 10 nations that posted many reviews and rated high score**
@@ -1223,13 +1223,13 @@ Though punctuations are removed in the original data set, we still need to clean
 
 #### 20 Most Frequent Words in 5000 Review Samples
 
-![png](output_150_0.png)
+![png](img/output_150_0.png)
 
 
 #### Generate Word Cloud for Reviews
 
 
-![png](output_153_0.png)
+![png](img/output_153_0.png)
 
 
 Reviewers are commenting on 'room', 'location', 'transportation', 'air condition', 'breakfast', 'floor', 'price',  'parking', 'restaurant','staff', 'noise', etc. Frequent positive words and negative words are displayed in the word cloud as well.
@@ -1237,21 +1237,21 @@ Reviewers are commenting on 'room', 'location', 'transportation', 'air condition
 ##### Word Cloud from reviews posted by reviewers on a business trip
 
 
-![png](output_156_0.png)
+![png](img/output_156_0.png)
 
 
 
-![png](output_157_0.png)
+![png](img/output_157_0.png)
 
 
 ##### Word Cloud from reviews posted by reviewers on a leisure trip
 
 
-![png](output_159_0.png)
+![png](img/output_159_0.png)
 
 
 
-![png](output_160_0.png)
+![png](img/output_160_0.png)
 
 
 ## Next Steps <a class="anchor" id="Next-Steps"></a>
