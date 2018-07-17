@@ -20,7 +20,7 @@
 Nowadays, people travel very often for business or for holidays. Travelers want to select hotels with clean rooms, high-quality service, convenient location etc. In a word, people hope to find a cozy and cost-effective hotel to stay while traveling. A massive amount of reviews are being posted online and people are influenced by online reviews in making their decisions. Each person has its own taste of 'cozy'. Where are the perfect hotels to your taste located? What are other travelers saying about that hotel? Are previous travelers having positive experience or bad one concerning your needs? We propose to investigate hotel reviews data and perform text analysis and topic modeling using Naive Bayes and LDA. We also propose to build a machine learning model for predicting review scores from the features we have in the data.
 
 ## Client <a class="anchor" id="Client"></a>
-Travelers will certainly be interested in this project. They might spend lots of time searching/reading/evaluating hotels and the reviews. This project will save a vast amount of time for travelers. Hotel owners are eager to know what customers are talking and especially caring about the hotels. This project can help them improve service quality and maximize their business profit. Other potential clients include travel service agencies and housing agencies etc.
+Travelers will certainly be interested in this project. They might spend lots of time searching/reading/evaluating hotels and the reviews. This project will save a vast amount of time for travelers. Hotel owners are eager to know what customers are talking and especially caring about the hotels. This project can help them improve service quality and maximize their business profit. Other potential clients include travel service agencies and housing agencies etc. Since it's really hard to manually read through all the reviews, being able to extract hidden topics in a large volume of texts is highly valuable to businesses, for instance, websites and companies selling bookings and travel advice. 
 
 ## Load Data <a class="anchor" id="Load-Data"></a>
 The dataset is originally from [kaggle](https://www.kaggle.com/jiashenliu/515k-hotel-reviews-data-in-europe). It is about 515K hotel reviews data in Europe. It's a csv file containing information on hotel name, hotel address, review date, review scores, reviewers' nationality, positive/negative reviews' word count etc.
@@ -246,42 +246,15 @@ hotel.isnull().sum()/len(hotel)
 
 
 ```python
-#Hotels with missing 'lat' and 'lng'
-hotel.Hotel_Name[hotel.lat.isnull()].value_counts()[::-1].plot.barh(color='c')
-plt.title('Hotels with missing geolocations')
-plt.xlabel('Count');
+print('Number of Hotels with missing geolocation: ',hotel.loc[hotel.lat.isnull(),'Hotel_Name'].nunique())
+print('Proportion of hotels with missing geolocation: %.2f' %(hotel.loc[hotel.lat.isnull(),'Hotel_Name'].nunique()/hotel.Hotel_Name.nunique()))
 ```
 
-
-![png](img/output_13_0.png)
-
-
-
-```python
-#Bar plot of 'Average_Score' of hotels with missing 'lat' and 'lng'
-hotel[hotel.lat.isnull()].Average_Score.value_counts().sort_index().plot.bar(rot=0,color='c')
-plt.title('Hotels with missing geolocations: Average_Score')
-plt.xlabel('Average_Score')
-plt.ylabel('Count');
-```
+    Number of Hotels with missing geolocation:  17
+    Proportion of hotels with missing geolocation: 0.01
 
 
-![png](img/output_14_0.png)
-
-
-
-```python
-hotel_noloc=hotel[hotel.lat.isnull()]
-
-sns.countplot(y='Hotel_Name',hue='Average_Score',data=hotel_noloc,palette='Reds',
-              order = hotel.Hotel_Name[hotel.lat.isnull()].value_counts().index);
-```
-
-
-![png](img/output_15_0.png)
-
-
-In this data set, 0.6% of the observations have missing 'lat' and 'lng'. That is 17 unique hotels (around 1% of the hotels) have hotel names and addresses but no geo-coordinates. Since there is no particular patterns and those coordinates will only be used for map visualization, we'll drop those hotels without coordinates when we plot the map. We can still keep all of them in other analysis.
+In this data set, 0.6% of the observations have missing 'lat' and 'lng'. That is 17 unique hotels (around 1% of the hotels) have hotel names and addresses but no geo-coordinates. We've checked that there are no particular patterns and those coordinates will only be used for map visualization, we'll drop those hotels without coordinates when we plot the map. We can still keep all of them in other analysis.
 
 ### Check and Drop Duplicates <a class="anchor" id="Check-and-Drop-Duplicates"></a>
 
@@ -289,6 +262,8 @@ In this data set, 0.6% of the observations have missing 'lat' and 'lng'. That is
 ```python
 hotel.duplicated().sum()
 ```
+    
+    526
 
 There are 526 duplicates in the data frame and we've removed them for the following analysis.
 
@@ -811,6 +786,7 @@ sns.heatmap(corr,annot=True,linewidths=0.4,annot_kws={'size':16});
 
 ![png](img/output_78_0.png)
 
+The heat map above displays the correlation matrix of numerical columns in the data frame. It gives us some hints on to what extent those features are correlated with each other. Take the 'Reviewer_Score' for instance, its correlation with features such as "Review_Total_Positive_Word_counts","Pos_Rev_WCRatio" and "Review_Total_Negative_Word_counts","Neg_Rev_WCRatio" is significant. It's highly positively correlated with 'Average_Score', "Review_Total_Positive_Word_counts","Pos_Rev_WCRatio" as the more positive words reviewers posted, the happier they might be with the hotels hence the higher score they rated the hotels. On the contrary, 'Reviewer_Score' is highly negatively correlated with "Review_Total_Negative_Word_counts","Neg_Rev_WCRatio" as expected since the longer negative reviews indicated more complains hence lower scores. Since the correlation of 'days_since_review' with other features are very small, we can drop this feature in the following analysis. 
 
 ### Visualization of Hotels <a class="anchor" id="Visualization-of-Hotels"></a>
 
@@ -1018,7 +994,7 @@ The average reviewer score of hotels is higher in January and low in October.
 ![png](img/output_105_0.png)
 
 
-![png](img/output_106_0.png)
+![png](img/output_102_0.png)
 
 
 **'Trip_Type' v.s. 'Reviewer_Score'**
@@ -1071,7 +1047,7 @@ Weekday doesn't seem to affect the reviewer score.
 **Reviewer_score v.s. Total_Number_of_Reviews_Reviewer_Has_Given**
 
 
-![png](img/output_128_0.png)
+![png](img/output_127_0.png)
 
 The figure indicates that the more reviews reviewers posted, the higher rating score reviewers tend to give.
 
