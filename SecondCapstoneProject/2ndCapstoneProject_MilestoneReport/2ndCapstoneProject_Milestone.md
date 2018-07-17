@@ -242,7 +242,7 @@ hotel.isnull().sum()/len(hotel)
     dtype: float64
 
 
-####  Visualize Hotels with Missing 'lat' and 'lng' 
+####  Hotels with Missing 'lat' and 'lng' 
 
 
 ```python
@@ -252,6 +252,30 @@ print('Proportion of hotels with missing geolocation: %.2f' %(hotel.loc[hotel.la
 
     Number of Hotels with missing geolocation:  17
     Proportion of hotels with missing geolocation: 0.01
+
+```python
+#How many reviews we will lose if we drop hotels with missing info
+hotel.Hotel_Name[hotel.lat.isnull()].value_counts()[::-1]
+```
+
+    Hotel Advance                                        28
+    Renaissance Barcelona Hotel                          33
+    Mercure Paris Gare Montparnasse                      37
+    Roomz Vienna                                         49
+    Holiday Inn Paris Montmartre                         55
+    Cordial Theaterhotel Wien                            57
+    Hotel Park Villa                                     61
+    City Hotel Deutschmeister                            93
+    NH Collection Barcelona Podium                      146
+    Derag Livinghotel Kaiser Franz Joseph Vienna        147
+    Austria Trend Hotel Schloss Wilhelminenberg Wien    194
+    Hotel Pension Baron am Schottentor                  223
+    Hotel Daniel Vienna                                 245
+    Maison Albar Hotel Paris Op ra Diamond              290
+    Hotel Atlanta                                       389
+    Hotel City Central                                  563
+    Fleming s Selection Hotel Wien City                 658
+    Name: Hotel_Name, dtype: int64
 
 
 In this data set, 0.6% of the observations have missing 'lat' and 'lng'. That is 17 unique hotels (around 1% of the hotels) have hotel names and addresses but no geo-coordinates. We've checked that there are no particular patterns and those coordinates will only be used for map visualization, we'll drop those hotels without coordinates when we plot the map. We can still keep all of them in other analysis.

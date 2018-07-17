@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<head>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script>L_PREFER_CANVAS = false; L_NO_TOUCH = false; L_DISABLE_3D = false;</script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.2.0/dist/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.2.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css" />
+    <link rel="stylesheet" href="https://rawgit.com/python-visualization/folium/master/folium/templates/leaflet.awesome.rotate.css" />
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    
+            <style> #map_ca1980b8204c4f94bd95dec9668c369d {
+                position : relative;
+                width : 100.0%;
+                height: 100.0%;
+                left: 0.0%;
+                top: 0.0%;
+                }
+            </style>
+        
+</head>
+<body>    
+    
+            <div class="folium-map" id="map_ca1980b8204c4f94bd95dec9668c369d" ></div>
+        
+</body>
+<script>    
+    
+
+            
+                var bounds = null;
+            
+
+            var map_ca1980b8204c4f94bd95dec9668c369d = L.map(
+                                  'map_ca1980b8204c4f94bd95dec9668c369d',
+                                  {center: [47.20901567,4.813385129999999],
+                                  zoom: 5,
+                                  maxBounds: bounds,
+                                  layers: [],
+                                  worldCopyJump: false,
+                                  crs: L.CRS.EPSG3857
+                                 });
+            
+        
+    
+            var tile_layer_453f1b6d294546e28101b394a0434b8c = L.tileLayer(
+                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                {
+  "attribution": null,
+  "detectRetina": false,
+  "maxZoom": 18,
+  "minZoom": 1,
+  "noWrap": false,
+  "subdomains": "abc"
+}
+                ).addTo(map_ca1980b8204c4f94bd95dec9668c369d);
+        
+    
+
+            var circle_31cf2f555f5a41b8bb118ce784f1213f = L.circle(
+                [51.5024348,-0.0002497],
+                {
+  "bubblingMouseEvents": true,
+  "color": "red",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": false,
+  "fillColor": "red",
+  "fillOpacity": 0.2,
+  "fillRule": "evenodd",
+  "lineCap": "round",
+  "lineJoin": "round",
+  "opacity": 1.0,
+  "radius": 84080,
+  "stroke": true,
+  "weight": 3
+}
+                ).addTo(map_ca1980b8204c4f94bd95dec9668c369d);
+            
+    
+            var popup_d426dd3895fd4234aaab2d2358a51340 = L.popup({maxWidth: '300'});
+
+            
+                var html_cb8cecf816fc4b79942713b4e4e3d462 = $('<div id="html_cb8cecf816fc4b79942713b4e4e3d462" style="width: 100.0%; height: 100.0%;"><strong>Hotel: Intercontinental London The O2</strong><br> <strong>Average_Score: 9.4</strong><br> Num_of_Reviews: 4204</strong><br></div>')[0];
+                popup_d426dd3895fd4234aaab2d2358a51340.setContent(html_cb8cecf816fc4b79942713b4e4e3d462);
+            
+
+            circle_31cf2f555f5a41b8bb118ce784f1213f.bindPopup(popup_d426dd3895fd4234aaab2d2358a51340);
+
+            
+        
+    
+
+            var circle_b65ba05646dc4ede9b950f492a2def9c = L.circle(
+                [51.5044972,-0.0855562],
+                {
+  "bubblingMouseEvents": true,
+  "color": "red",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": false,
+  "fillColor": "red",
+  "fillOpacity": 0.2,
+  "fillRule": "evenodd",
+  "lineCap": "round",
+  "lineJoin": "round",
+  "opacity": 1.0,
+  "radius": 44000,
+  "stroke": true,
+  "weight": 3
+}
+                ).addTo(map_ca1980b8204c4f94bd95dec9668c369d);
+            
+    
+            var popup_7c3caea975314d68a686d31771a6d3b0 = L.popup({maxWidth: '300'});
+
+            
+                var html_607456f72d624abb8722868086724b1c = $('<div id="html_607456f72d624abb8722868086724b1c" style="width: 100.0%; height: 100.0%;"><strong>Hotel: Shangri La Hotel at The Shard London</strong><br> <strong>Average_Score: 9.4</strong><br> Num_of_Reviews: 2200</strong><br></div>')[0];
+                popup_7c3caea975314d68a686d31771a6d3b0.setContent(html_607456f72d624abb8722868086724b1c);
+            
+
+            circle_b65ba05646dc4ede9b950f492a2def9c.bindPopup(popup_7c3caea975314d68a686d31771a6d3b0);
+
+            
+        
+    
+
+            var circle_0314c9e7eeed47bb84249ce6a499a2b4 = L.circle(
+                [41.3885658,2.1712991],
+                {
+  "bubblingMouseEvents": true,
+  "color": "red",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": false,
+  "fillColor": "red",
+  "fillOpacity": 0.2,
+  "fillRule": "evenodd",
+  "lineCap": "round",
+  "lineJoin": "round",
+  "opacity": 1.0,
+  "radius": 34220,
+  "stroke": true,
+  "weight": 3
+}
+                ).addTo(map_ca1980b8204c4f94bd95dec9668c369d);
+            
+    
+            var popup_21322a9759234189be25f2d68a59933e = L.popup({maxWidth: '300'});
+
+            
+                var html_70f382d0239142459ad5080f32c02c22 = $('<div id="html_70f382d0239142459ad5080f32c02c22" style="width: 100.0%; height: 100.0%;"><strong>Hotel: Catalonia Square 4 Sup</strong><br> <strong>Average_Score: 9.4</strong><br> Num_of_Reviews: 1711</strong><br></div>')[0];
+                popup_21322a9759234189be25f2d68a59933e.setContent(html_70f382d0239142459ad5080f32c02c22);
+            
+
+            circle_0314c9e7eeed47bb84249ce6a499a2b4.bindPopup(popup_21322a9759234189be25f2d68a59933e);
+
+            
+        
+    
+
+            var circle_284268d93c9d4b34b2d94e1b7fd4d8f4 = L.circle(
+                [48.1975497,16.3686397],
+                {
+  "bubblingMouseEvents": true,
+  "color": "red",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": false,
+  "fillColor": "red",
+  "fillOpacity": 0.2,
+  "fillRule": "evenodd",
+  "lineCap": "round",
+  "lineJoin": "round",
+  "opacity": 1.0,
+  "radius": 27060,
+  "stroke": true,
+  "weight": 3
+}
+                ).addTo(map_ca1980b8204c4f94bd95dec9668c369d);
+            
+    
+            var popup_71712416e1fe4ec2aaacfb69a791dbdf = L.popup({maxWidth: '300'});
+
+            
+                var html_6d19f926e541401699107c212f57c1ef = $('<div id="html_6d19f926e541401699107c212f57c1ef" style="width: 100.0%; height: 100.0%;"><strong>Hotel: Best Western Premier Kaiserhof Wien</strong><br> <strong>Average_Score: 9.4</strong><br> Num_of_Reviews: 1353</strong><br></div>')[0];
+                popup_71712416e1fe4ec2aaacfb69a791dbdf.setContent(html_6d19f926e541401699107c212f57c1ef);
+            
+
+            circle_284268d93c9d4b34b2d94e1b7fd4d8f4.bindPopup(popup_71712416e1fe4ec2aaacfb69a791dbdf);
+
+            
+        
+    
+
+            var circle_cce25751bf444e959aaba15201b09cb0 = L.circle(
+                [45.4857027,9.2020127],
+                {
+  "bubblingMouseEvents": true,
+  "color": "red",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": false,
+  "fillColor": "red",
+  "fillOpacity": 0.2,
+  "fillRule": "evenodd",
+  "lineCap": "round",
+  "lineJoin": "round",
+  "opacity": 1.0,
+  "radius": 26900,
+  "stroke": true,
+  "weight": 3
+}
+                ).addTo(map_ca1980b8204c4f94bd95dec9668c369d);
+            
+    
+            var popup_d11ef16b337a4a819777b4272b698300 = L.popup({maxWidth: '300'});
+
+            
+                var html_58f24bb2e7804d5f9fd87391678768f8 = $('<div id="html_58f24bb2e7804d5f9fd87391678768f8" style="width: 100.0%; height: 100.0%;"><strong>Hotel: Excelsior Hotel Gallia Luxury Collection Hotel</strong><br> <strong>Average_Score: 9.4</strong><br> Num_of_Reviews: 1345</strong><br></div>')[0];
+                popup_d11ef16b337a4a819777b4272b698300.setContent(html_58f24bb2e7804d5f9fd87391678768f8);
+            
+
+            circle_cce25751bf444e959aaba15201b09cb0.bindPopup(popup_d11ef16b337a4a819777b4272b698300);
+
+            
+        
+    
+
+            var circle_20dec579e9b64c98a2b6e4aa26b85db1 = L.circle(
+                [41.3916258,2.1716377999999996],
+                {
+  "bubblingMouseEvents": true,
+  "color": "red",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": false,
+  "fillColor": "red",
+  "fillOpacity": 0.2,
+  "fillRule": "evenodd",
+  "lineCap": "round",
+  "lineJoin": "round",
+  "opacity": 1.0,
+  "radius": 25320,
+  "stroke": true,
+  "weight": 3
+}
+                ).addTo(map_ca1980b8204c4f94bd95dec9668c369d);
+            
+    
+            var popup_cc276bc797dc4ec188af07537708c846 = L.popup({maxWidth: '300'});
+
+            
+                var html_5fee9942075540268725079bb12a0eaa = $('<div id="html_5fee9942075540268725079bb12a0eaa" style="width: 100.0%; height: 100.0%;"><strong>Hotel: Hotel Palace GL</strong><br> <strong>Average_Score: 9.4</strong><br> Num_of_Reviews: 1266</strong><br></div>')[0];
+                popup_cc276bc797dc4ec188af07537708c846.setContent(html_5fee9942075540268725079bb12a0eaa);
+            
+
+            circle_20dec579e9b64c98a2b6e4aa26b85db1.bindPopup(popup_cc276bc797dc4ec188af07537708c846);
+
+            
+        
+    
+
+            var circle_c678c417e3a64140adff6ead269eb7c5 = L.circle(
+                [41.3861283,2.1745291],
+                {
+  "bubblingMouseEvents": true,
+  "color": "red",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": false,
+  "fillColor": "red",
+  "fillOpacity": 0.2,
+  "fillRule": "evenodd",
+  "lineCap": "round",
+  "lineJoin": "round",
+  "opacity": 1.0,
+  "radius": 22160,
+  "stroke": true,
+  "weight": 3
+}
+                ).addTo(map_ca1980b8204c4f94bd95dec9668c369d);
+            
+    
+            var popup_109a396ca9cd41e195f7385a32f35f25 = L.popup({maxWidth: '300'});
+
+            
+                var html_77526a5318d34e33b9f944b1a8615ec2 = $('<div id="html_77526a5318d34e33b9f944b1a8615ec2" style="width: 100.0%; height: 100.0%;"><strong>Hotel: Catalonia Magdalenes</strong><br> <strong>Average_Score: 9.4</strong><br> Num_of_Reviews: 1108</strong><br></div>')[0];
+                popup_109a396ca9cd41e195f7385a32f35f25.setContent(html_77526a5318d34e33b9f944b1a8615ec2);
+            
+
+            circle_c678c417e3a64140adff6ead269eb7c5.bindPopup(popup_109a396ca9cd41e195f7385a32f35f25);
+
+            
+        
+    
+
+            var circle_333b0a9a2b6b4796b52a45d238e3fc2c = L.circle(
+                [51.5111922,-0.11940060000000001],
+                {
+  "bubblingMouseEvents": true,
+  "color": "red",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": false,
+  "fillColor": "red",
+  "fillOpacity": 0.2,
+  "fillRule": "evenodd",
+  "lineCap": "round",
+  "lineJoin": "round",
+  "opacity": 1.0,
+  "radius": 20420,
+  "stroke": true,
+  "weight": 3
+}
+                ).addTo(map_ca1980b8204c4f94bd95dec9668c369d);
+            
+    
+            var popup_4d2f427fb3a84715a9858ac5c1e65a79 = L.popup({maxWidth: '300'});
+
+            
+                var html_b2d549be5c6347689f3fa7d7e481c1b2 = $('<div id="html_b2d549be5c6347689f3fa7d7e481c1b2" style="width: 100.0%; height: 100.0%;"><strong>Hotel: The Savoy</strong><br> <strong>Average_Score: 9.4</strong><br> Num_of_Reviews: 1021</strong><br></div>')[0];
+                popup_4d2f427fb3a84715a9858ac5c1e65a79.setContent(html_b2d549be5c6347689f3fa7d7e481c1b2);
+            
+
+            circle_333b0a9a2b6b4796b52a45d238e3fc2c.bindPopup(popup_4d2f427fb3a84715a9858ac5c1e65a79);
+
+            
+        
+    
+
+            var circle_b0af534602404f41a2f04b8abdcb4671 = L.circle(
+                [51.5173303,-0.11809660000000001],
+                {
+  "bubblingMouseEvents": true,
+  "color": "red",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": false,
+  "fillColor": "red",
+  "fillOpacity": 0.2,
+  "fillRule": "evenodd",
+  "lineCap": "round",
+  "lineJoin": "round",
+  "opacity": 1.0,
+  "radius": 20160,
+  "stroke": true,
+  "weight": 3
+}
+                ).addTo(map_ca1980b8204c4f94bd95dec9668c369d);
+            
+    
+            var popup_6782c18e861b4ed19305c3689a42d90a = L.popup({maxWidth: '300'});
+
+            
+                var html_aa638abdb6b6484cb4a71ff1be276718 = $('<div id="html_aa638abdb6b6484cb4a71ff1be276718" style="width: 100.0%; height: 100.0%;"><strong>Hotel: Rosewood London</strong><br> <strong>Average_Score: 9.4</strong><br> Num_of_Reviews: 1008</strong><br></div>')[0];
+                popup_6782c18e861b4ed19305c3689a42d90a.setContent(html_aa638abdb6b6484cb4a71ff1be276718);
+            
+
+            circle_b0af534602404f41a2f04b8abdcb4671.bindPopup(popup_6782c18e861b4ed19305c3689a42d90a);
+
+            
+        
+    
+
+            var circle_dc9b0eba3f73431a996953af6e3446ee = L.circle(
+                [48.2051299,16.369035999999998],
+                {
+  "bubblingMouseEvents": true,
+  "color": "red",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": false,
+  "fillColor": "red",
+  "fillOpacity": 0.2,
+  "fillRule": "evenodd",
+  "lineCap": "round",
+  "lineJoin": "round",
+  "opacity": 1.0,
+  "radius": 19020,
+  "stroke": true,
+  "weight": 3
+}
+                ).addTo(map_ca1980b8204c4f94bd95dec9668c369d);
+            
+    
+            var popup_f62d4edaa22a410c8e08a5d66b9f0b8a = L.popup({maxWidth: '300'});
+
+            
+                var html_4fa44f25ec31476696a245080555ad80 = $('<div id="html_4fa44f25ec31476696a245080555ad80" style="width: 100.0%; height: 100.0%;"><strong>Hotel: The Guesthouse Vienna</strong><br> <strong>Average_Score: 9.4</strong><br> Num_of_Reviews: 951</strong><br></div>')[0];
+                popup_f62d4edaa22a410c8e08a5d66b9f0b8a.setContent(html_4fa44f25ec31476696a245080555ad80);
+            
+
+            circle_dc9b0eba3f73431a996953af6e3446ee.bindPopup(popup_f62d4edaa22a410c8e08a5d66b9f0b8a);
+
+            
+        
+</script>
