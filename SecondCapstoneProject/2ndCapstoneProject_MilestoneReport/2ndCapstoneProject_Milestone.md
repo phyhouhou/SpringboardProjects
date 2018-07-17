@@ -1092,6 +1092,7 @@ The above two figures indicate that the longer (shorter) the positive review is,
 
 ![png](img/reviewer.png)
 
+For an interactive visualization, click [here](https://houhoureviewer.herokuapp.com/index.html)
 
 **Top 10 nations that posted many reviews and rated high score**
 We find the top nations by checking that its number of reviews is above its median and then sort the score and number of reviews from high to low.
