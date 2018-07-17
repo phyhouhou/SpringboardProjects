@@ -814,11 +814,11 @@ The heat map above displays the correlation matrix of numerical columns in the d
 
 ### Visualization of Hotels <a class="anchor" id="Visualization-of-Hotels"></a>
 
-**Make a heatmap in order to see where the most hotels are located**
+**Make a map in order to see where the most hotels are located**
 
 ![png](img/hotel.png)
 
-
+For an interactive visualization, click [here](https://houhouhotel.herokuapp.com/index.html)
 
 
 #### Who Are the Most Popular Hotels?
