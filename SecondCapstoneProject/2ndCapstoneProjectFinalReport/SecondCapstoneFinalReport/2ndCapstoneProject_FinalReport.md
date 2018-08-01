@@ -79,7 +79,7 @@ hotel.head()
     dtypes: float64(4), int64(5), object(7)
     memory usage: 66.9+ MB
 
-
+<div>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -1669,24 +1669,7 @@ df_document_topics = df_document_topic.head(10)
 df_document_topics
 ```
 
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
+<table border="0.8" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -2888,20 +2871,7 @@ The perplexity decreases as the number of topics increases. But the best accurac
 
 ##  Compare Model Performance <a class="anchor" id="Compare-Model-Performance"></a>
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
+<table border="0.4" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -3272,20 +3242,7 @@ res_SGD_bin=run_pipeline(steps_SGD_bin,X_train,y_train,X_test,y_test)
 Accuracy score of the test set for each model:
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
+<table border="0.4" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
