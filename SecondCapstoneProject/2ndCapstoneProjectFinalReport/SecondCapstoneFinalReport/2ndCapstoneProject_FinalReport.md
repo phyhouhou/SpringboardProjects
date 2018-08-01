@@ -33,8 +33,10 @@
     * [Poor or not](#Poor-or-not)
     * [Enrich Predictors with Categorical and Numerical Features](#Enrich-Predictors)
 9. [Conclusions](#Conclusions)
-10.[Next Steps](#Next-Steps)
-11.[Deliverables](#Deliverables)
+
+10. [Next Steps](#Next-Steps)
+
+11. [Deliverables](#Deliverables)
         
         
 # Introduction <a class="anchor" id="Introduction"></a>
@@ -1119,7 +1121,7 @@ For an interactive visualization, click [here](https://houhoureviewer.herokuapp.
 We find the top nations by checking that its number of reviews is above its median and then sort the score and number of reviews from high to low.
 
 <div>
-<table border="1" class="dataframe">
+<table border="0.8" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -1380,20 +1382,7 @@ Which words are mostly used in reviews? Below is a table to show the top 10 feat
     
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
+<table border="0.4" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -3418,6 +3407,6 @@ We notice that some reviewers give very low score but posted both positive and n
 
 
 # Deliverables <a class="anchor" id="Deliverables"></a>
-Read (milestone report)[https://github.com/phyhouhou/SpringboardProjects/blob/master/SecondCapstoneProject/2ndCapstoneProject_MilestoneReport/2ndCapstoneProject_Milestone.ipynb] for details and codes in data cleaning and exploratory data analysis.<br>
-Read (SecondCapstoneProject_NLP_ML)[https://github.com/phyhouhou/SpringboardProjects/blob/master/SecondCapstoneProject/2ndCapstoneProjectFinalReport/SecondCapstoneProject_NLP_ML.ipynb] for details about feature engineering and model evaluations.<br>
+Read [milestone report](https://github.com/phyhouhou/SpringboardProjects/blob/master/SecondCapstoneProject/2ndCapstoneProject_MilestoneReport/2ndCapstoneProject_Milestone.ipynb) for details and codes in data cleaning and exploratory data analysis.<br>
+Read [SecondCapstoneProject_NLP_ML](https://github.com/phyhouhou/SpringboardProjects/blob/master/SecondCapstoneProject/2ndCapstoneProjectFinalReport/SecondCapstoneProject_NLP_ML.ipynb) for details about feature engineering and model evaluations.<br>
 
