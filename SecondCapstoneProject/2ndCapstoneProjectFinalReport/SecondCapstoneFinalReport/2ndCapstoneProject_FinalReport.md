@@ -1,4 +1,4 @@
-# Hotels Reviews: Topic Modeling and Review Score Predictor
+# Hotel Reviews: Topic Modeling and Supervised Machine Learning 
 
 
 
