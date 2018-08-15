@@ -1267,7 +1267,7 @@ Reviewers are commenting on 'room', 'location', 'breakfast', 'parking', 'price',
 
 ![png](img/output_156_0.png)
 
-![png](img/output_164_0)
+![png](img/output_164_0.png)
 
 A bigram word cloud gives a better idea of what the complains are about, i.e., small room, noisy room, poor breakfast, expensive breakfast, room hot...
 
