@@ -43,10 +43,10 @@
 Nowadays, people travel very often for business or for holidays. Travelers want to select hotels with clean rooms, high-quality service, convenient location etc. In a word, people hope to find a cozy and cost-effective hotel to stay while traveling. A massive amount of reviews are being posted online and people are influenced by online reviews in making their decisions. Each person has its own taste of 'cozy'. Where are the perfect hotels to your taste located? What are other travelers saying about that hotel? Are previous travelers having positive experience or bad one concerning your needs? We propose to investigate hotel reviews data and perform text analysis and topic modeling using Naive Bayes and LDA. We also propose to build a machine learning model for predicting review scores from the features we have in the data.
 
 # Client <a class="anchor" id="Client"></a>
-Travelers will certainly be interested in this project. They might spend lots of time searching/reading/evaluating hotels and the reviews. This project will save a vast amount of time for travelers. Hotel owners are eager to know what customers are talking and especially caring about the hotels. This project can help them improve service quality and maximize their business profit. Other potential clients include travel service agencies and housing agencies etc. Since it's really hard to manually read through all the reviews, being able to extract hidden topics in a large volume of texts is highly valuable to businesses, for instance, websites and companies selling bookings and travel advice. 
+Since it's really hard to manually read through all the reviews, being able to extract hidden topics in a large volume of texts is highly valuable to businesses, for instance, travel intelligence companies such as Expedia, TripAdvisor, Priceline and Kayak etc. Today online travel companies add values through content, personalization and service, but above all - reviews. Travelers might spend lots of time searching/reading/evaluating hotels and the reviews. This project will save a vast amount of time for travelers. Hotel owners are eager to know what customers are talking and especially caring about the hotels. This project can help them improve service quality and maximize their business profit. Other potential clients include travel service agencies and housing agencies etc. 
 
 # Data <a class="anchor" id="Data"></a>
-The dataset is originally from [kaggle](https://www.kaggle.com/jiashenliu/515k-hotel-reviews-data-in-europe). It is about 515K hotel reviews data in Europe. It's a csv file containing information on hotel name, hotel address, review date, review scores, reviewers' nationality, positive/negative reviews' word count etc.
+The dataset is originally from [kaggle](https://www.kaggle.com/jiashenliu/515k-hotel-reviews-data-in-europe). It contains about 515K customer reviews data and scoring for hotels across Europe. The csv file contains information on hotel name, hotel address, review date, review scores, reviewers' nationality, positive/negative reviews' word count etc.
 
 The data can be enriched by adding hotel features acquired from, for instance, trip advisor etc.
 
@@ -221,6 +221,25 @@ hotel.head()
 </table>
 </div>
 
+**Description of Features**<br>
+
+* Hotel_Address: Address of hotel.
+* Review_Date: Date when reviewer posted the corresponding review.
+* Average_Score: Average Score of the hotel, calculated based on the latest comment in the last year.
+* Hotel_Name: Name of Hotel
+* Reviewer_Nationality: Nationality of Reviewer
+* Negative_Review: Negative Review the reviewer gave to the hotel. If the reviewer does not give the negative review, then it should be: 'No Negative'
+* Review_Total_Negative_Word_Counts: Total number of words in the negative review.
+* Positive_Review: Positive Review the reviewer gave to the hotel. If the reviewer does not give the negative review, then it should be: 'No Positive'
+* Review_Total_Positive_Word_Counts: Total number of words in the positive review.
+* Reviewer_Score: Score the reviewer has given to the hotel, based on his/her experience
+* Total_Number_of_Reviews_Reviewer_Has_Given: Number of Reviews the reviewers has given in the past.
+* Total_Number_of_Reviews: Total number of valid reviews the hotel has.
+* Tags: Tags reviewer gave the hotel.
+* days_since_review: Duration between the review date and scrape date.
+* Additional_Number_of_Scoring: There are also some guests who just made a scoring on the service rather than a review. This number indicates how many valid scores without review in there.
+* lat: Latitude of the hotel
+* lng: longtitude of the hotel
 
 
 **Summary of data**
@@ -354,7 +373,7 @@ plt.xlabel('Review_Posted_Month')
 plt.ylabel('Count');
 
 ```
-
+The largest number of reviews occurs in  August followed by July indicating the month that expects most travelers.
 
 ![png](img/output_33_0.png)
 
@@ -362,15 +381,16 @@ plt.ylabel('Count');
 ```python
 wday=[d[:3] for d in calendar.day_name[0:7]]
 
-htl_wday=(hotel.Review_Wday.value_counts(normalize=True)*100).reindex(wday)
-plot_bar(htl_wday,'Review_Posted_Day',0)
+htl_wday=(hotel.Review_Wday.value_counts()).reindex(wday).plot(kind='bar',color='c',rot=0)
+plt.xlabel('Review_Posted_Day')
+plt.ylabel('Count');
 ```
 
 
 ![png](img/output_35_0.png)
 
 
-Reviews posted on Tuesdays are the most among days of the week while reviews posted on Fridays are the least.
+Reviewers are most likely to post reviews on Tuesdays and least likely on Fridays among days of the week.
 
 ***Add 'Pos_Rev_WCRatio' and 'Neg_Rev_WCRatio'***
 
@@ -386,7 +406,7 @@ plt.title('Distribution of Word Counts of Reviews');
 
 ![png](img/output_38_0.png)
 
-
+Most of the reviews (both positive and negative) have word counts less than 50.
 
 ```python
 hotel['Pos_Rev_WCRatio'].plot.hist(bins=50,color='c');
@@ -1001,20 +1021,6 @@ sns.countplot(x='Average_Score',data=htl_clean,color='c');
 ![png](img/output_94_0.png)
 
 
-
-```python
-#Normmal test
-from scipy import stats
-_,fit=stats.probplot(htl_clean.Average_Score,dist=stats.norm,plot=plt)
-plt.title('Quantile Plot');
-```
-
-
-![png](img/output_95_0.png)
-
-
-The average score is above 5 and its mean is 8.4. 
-
 #### Any Trends in Average Score of Hotels
 All average scores are above 5 and its mean is at 8.4. We will explore if there is any trend in average score below by time series analysis.
 
@@ -1041,9 +1047,6 @@ The average reviewer score of hotels is higher in January and low in October.
 ![png](img/output_105_0.png)
 
 
-![png](img/output_102_0.png)
-
-
 **'Trip_Type' v.s. 'Reviewer_Score'**
 
 ![png](img/output_108_0.png)
@@ -1065,7 +1068,7 @@ Reviewers on a leisure trip tend to rate higher than those on a business trip. I
 
 ![png](img/output_117_0.png)
 
-Since very few portion of travelers stayed in hotel for more than two weeks, if we focus on the range where 'Num_Nights'<14, the curve above indicates that on average the longer traveler stayed the lower the score they give. This can be visualized more clearly in next plot.
+Since very few portion of travelers stayed in hotel for more than two weeks, if we focus on the range where 'Num_Nights'<14, the curve above indicates that on average the longer traveler stayed the slightly lower the score they give. This next heatmap displays that there is a rather small negative correlation between the reviewer score and number of nights they stay in hotesl.
 
 
 ![png](img/output_119_0.png)
@@ -1108,7 +1111,7 @@ The figure indicates that the more reviews reviewers posted, the higher rating s
 ![png](img/output_132_0.png)
 
 
-The above two figures indicate that the longer (shorter) the positive review is, the higher reviewers tend to rate the score.
+The above two figures indicate that the longer (shorter) the positive (negative) review is, the higher reviewers tend to rate the score.
 
 
 **Make a heatmap to see where the most reviewers are from**
@@ -1118,6 +1121,7 @@ The above two figures indicate that the longer (shorter) the positive review is,
 For an interactive visualization, click [here](https://houhoureviewer.herokuapp.com/index.html)
 
 **Top 10 nations that posted many reviews and rated high score**
+
 We find the top nations by checking that its number of reviews is above its median and then sort the score and number of reviews from high to low.
 
 <div>
@@ -1256,26 +1260,34 @@ Though punctuations are removed in the original data set, we still need to clean
 ![png](img/output_153_0.png)
 
 
-Reviewers are commenting on 'room', 'location', 'transportation', 'air condition', 'breakfast', 'floor', 'price',  'parking', 'restaurant','staff', 'noise', etc. Frequent positive words and negative words are displayed in the word cloud as well.
+Reviewers are commenting on 'room', 'location', 'breakfast', 'parking', 'price', 'restaurant','staff', 'noise', facilities ('air condition', 'floor', 'bed') etc. Frequent positive words and negative words are displayed in the word cloud as well.
 
 #### Word Cloud from reviews posted by reviewers on a business trip
 
 
 ![png](img/output_156_0.png)
 
+![png](img/bigrambusinessNeg.png)
 
+A bigram word cloud gives a better idea of what the complains are about, i.e., small room, noisy room, poor breakfast, expensive breakfast, room hot...
 
 ![png](img/output_157_0.png)
 
+Great location, friendly staff, good breakfast, comforable room... really makes reviewers happy and post positive reviews.
 
 #### Word Cloud from reviews posted by reviewers on a leisure trip
 
 
 ![png](img/output_159_0.png)
 
+![png](img/bigramleisureNeg.png)
 
+The bigram word cloud displays that reviewers on a leisure trip are complaining about the size of room, and more on air conditioning, price of breakfast and less on noise compared to reviewers on a business trip.
 
 ![png](img/output_160_0.png)
+
+Positive reviews from reviewers on a leisure trip includs great location, friendly/helpful staff, spacious room, good breakfast... as well.
+
 
 
 
