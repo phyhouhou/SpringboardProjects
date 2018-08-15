@@ -1267,22 +1267,22 @@ Reviewers are commenting on 'room', 'location', 'breakfast', 'parking', 'price',
 
 ![png](img/output_156_0.png)
 
-![png](img/bigrambusinessNeg.png)
+![png](img/output_164_0)
 
 A bigram word cloud gives a better idea of what the complains are about, i.e., small room, noisy room, poor breakfast, expensive breakfast, room hot...
 
 ![png](img/output_157_0.png)
 
-Great location, friendly staff, good breakfast, comforable room... really makes reviewers happy and post positive reviews.
+Great location, friendly staff, good breakfast, comforable room... makes reviewers happy and post positive reviews.
 
 #### Word Cloud from reviews posted by reviewers on a leisure trip
 
 
 ![png](img/output_159_0.png)
 
-![png](img/bigramleisureNeg.png)
+![png](img/output_169_0.png)
 
-The bigram word cloud displays that reviewers on a leisure trip are complaining about the size of room, and more on air conditioning, price of breakfast and less on noise compared to reviewers on a business trip.
+The bigram word cloud displays that reviewers on a leisure trip are complaining about the size of room, air conditioning and more on price of breakfast and less on noise compared to reviewers on a business trip.
 
 ![png](img/output_160_0.png)
 
