@@ -1286,7 +1286,7 @@ The bigram word cloud displays that reviewers on a leisure trip are complaining 
 
 ![png](img/output_160_0.png)
 
-Positive reviews from reviewers on a leisure trip includs great location, friendly/helpful staff, spacious room, good breakfast... as well.
+Positive reviews from a leisure trip includs great location, friendly/helpful staff, spacious room, good breakfast etc.
 
 
 
@@ -1298,7 +1298,7 @@ We've cleaned the raw hotel data as reported above and in the [milestone report]
 
 
 ## Build LDA Model with sklearn <a class="anchor" id="Build-LDA-Model-with-sklearn"></a>
-In this section, we will first clean the texts and then create a word-document matrix, which is a required input for implementing the LDA algorithm with sklearn. We will then build a LDA model and discuss the model performance to find out what topics reviewers are talking about. 
+In this section, we will first clean the texts and then create a word-document matrix, which is a required input for implementing the LDA algorithm with sklearn. We will then build a LDA model and discuss the model performance. 
 
 ### Clean-up Review Text 
 
@@ -1326,7 +1326,7 @@ Review texts are processed in the following steps:
 * Strip whitespaces;
 * Tokenize sentence into a list of words;
 * Remove English stopwords;
-* Lemmatize words to its roots.
+* Lemmatize words to its roots and allowed postags are 'NOUN', 'ADJ', 'VERB', 'ADV'.
 
 We save the cleaned review texts in a csv file for convenience.    
 
@@ -1345,33 +1345,6 @@ print('Number of Observations: %d' %len(df_txt))
 ### Create the Document-Word Matrix 
 We create the document-word matrix with CountVectorizer. Since the review data is very large, we only consider words that has occurred at at least 10 times (min_df) and with at least character length 3, remove built-in english stopwords and convert all words to lowercase.
 
-
-```python
-#Join negative and positive reviews
-df_txt['Rev_Lemmatized']=df_txt['Neg_Rev_Lemmatized'].fillna('')+' '+df_txt['Pos_Rev_Lemmatized'].fillna('')
-rev_lemmatized=df_txt['Rev_Lemmatized']
-
-#Initialise the CountVectorizer with the required configuration
-c_vec = CountVectorizer(analyzer='word',       
-                             min_df=10,                       
-                             stop_words='english',             
-                             lowercase=True,                  
-                             token_pattern='[a-zA-Z]{3,}',    
-                            )
-
-#Build the vocabulary by 'fit'
-c_vec.fit(rev_lemmatized)
-
-#Convert reviews to a bag of words
-rev_vectorized=c_vec.transform(rev_lemmatized) 
-
-
-#Check the sparscity, i.e., percentage of Non-Zero cells
-print ('Shape of Sparse Matrix: ', rev_vectorized.shape)
-print ('Amount of Non-Zero occurences: ', rev_vectorized.nnz)
-print ('sparsity: %.2f%%' % (100.0 * rev_vectorized.nnz / (rev_vectorized.shape[0] * rev_vectorized.shape[1])))
-```
-
     Shape of Sparse Matrix:  (429464, 10670)
     Amount of Non-Zero occurences:  6941938
     sparsity: 0.15%
@@ -1387,89 +1360,13 @@ The distribution is very long-tailed. Some of the words appear in too many docum
 ![png](img/output_18_0.png)
 
 
-Which words are mostly used in reviews? Below is a table to show the top 10 features in the bag-of-word and its overall occurance. 
-
-     
-     Top 10 Features in the bag-of-word and the counts:
-    
-
-<div>
-<table border="0.4" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>word</th>
-      <th>count</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>room</td>
-      <td>376243</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>staff</td>
-      <td>218196</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>location</td>
-      <td>178012</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>good</td>
-      <td>145318</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>breakfast</td>
-      <td>135939</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>great</td>
-      <td>106319</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>bed</td>
-      <td>97308</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>friendly</td>
-      <td>83682</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>clean</td>
-      <td>81072</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>helpful</td>
-      <td>76320</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-Below is a visualization of the top 10 words in the review.
-
-![png](img/output_22_0.png)
-
-
 ### LDA Model 
 
-Each review is a mixture of both negative and positive part. Will the LDA model be able to separate combined reviews into positive and negative topics? Since topic-modeling can be quite time-consuming and the data is quite large, let's build a 2-topic model to explore this issue. 
+Each review is a mixture of both negative and positive part. Will the LDA model be able to separate combined reviews into positive and negative topics? Since topic-modeling can be quite time-consuming and the data is quite large, let's build a 2-topic model to explore this issue. Below are some samples to give an idea of what the reviews look like.
 
 
 ```python
- for num,message in enumerate(rev_lemmatized[:10]):
+ for num,message in enumerate(rev_lemmatized[:5]):
     print(num,message)
     print ('\n')
 ```
@@ -1489,35 +1386,7 @@ Each review is a mixture of both negative and positive part. Will the LDA model 
     4 book company line show picture room think get pay arrive room book staff tell could book villa suite theough directly completely false advertising realise grouped lot room photo together leave consumer confuse extreamly disgruntle especially wife birthday present make website clear pricing photo really know pay much wnded photo tell get something happy use amazing location build romantic setting
     
         
-    
-
-```python
-lda_modeln2 = LDA(n_components=2,          
-                  max_iter=10, 
-                  learning_method='online',   
-                  random_state=100,         
-                  batch_size=128,           
-                  evaluate_every = 0,       
-                  n_jobs =1,            
-                  )
-
-lda_modeln2.fit(rev_vectorized)
-lda_output = lda_modeln2.transform(rev_vectorized)
-
-lda_n2_LogLikelihood=lda_modeln2.score(rev_vectorized)
-lda_n2_perp=lda_modeln2.perplexity(rev_vectorized)
-
-#See model parameters
-print('Model parameters:')
-pprint(lda_modeln2.get_params())
-
-#----Diagnose model performance with perplexity and log-likelihood---
-#Log Likelyhood: Higher the better
-print("\nLog Likelihood Score: %.2f" %lda_n2_LogLikelihood) 
-
-#Perplexity: Lower the better. Perplexity = exp(-1. * log-likelihood per word)
-print("\nPerplexity: %.2f" %lda_n2_perp) 
-```
+We build the LDA model using bag-of-word features 'rev_vectorized' generated above and set the number of topics to be 2. We then implement the LDA algorithm and calcuate the loglikelihood score and perplexity of the model.  
 
     Model parameters:
     {'batch_size': 128,
@@ -1543,55 +1412,20 @@ print("\nPerplexity: %.2f" %lda_n2_perp)
     Perplexity: 703.10
 
 
-
-```python
-#Define a function to display topics
-def display_topics(model, feature_names, num_top_words):
-    for topic_idx, topic in enumerate(model.components_):
-        print ("Topic %d:" % (topic_idx))
-        print (" ".join([feature_names[i]
-                        for i in topic.argsort()[:-num_top_words - 1:-1]]))
-
-num_top_words = 20
-feature_names=c_vec.get_feature_names()
-display_topics(lda_modeln2, feature_names, num_top_words)
-```
+The topics are displayed below with an assigned number of top 50 word features:
 
     Topic 0:
-    room bed staff night good shower check breakfast day bathroom location time work small reception stay make book floor ask
+    room bed staff night good shower check breakfast day bathroom location time work small reception stay make book floor ask pay service need clean door water window use air poor nice hot bad noise come coffee say star open noisy charge leave morning sleep look tell people old arrive really
     Topic 1:
-    staff room location good breakfast great friendly helpful nice clean excellent comfortable bed stay close restaurant station walk really lovely
+    staff room location good breakfast great friendly helpful nice clean excellent comfortable bed stay close restaurant station walk really lovely bar perfect city small view area bit little service food metro quiet amazing price facility minute modern easy love place central pool expensive spacious fantastic train london big comfy beautiful
 
 
-Topics are quite overlapped for n_component=2 model and the model doesn't seem to classify reviews as negative and positive topics as expected though in the first topic 'small' is used.
+The 2-topic model seems to classify reviews as negative and positive topics. In the first topic, negative words such as 'small', 'hot', 'bad', 'noise', 'old' are used. In the second topic, positive words like 'great', 'friendly', 'helpful', 'nice', 'clean', 'excellent', 'comfortable', 'perfect' etc are frequently used.
 
-Since we have limited computing resources and it takes several hours to run the LDA code, we pick n_components=5 for display purpose. We will compare accuracy score in machine learning part for larger n_components=5,50,100 to analyze how n_components affects the model performance.
+Since we have limited computing resources and it's time-consuming to run the LDA code, we pick n_components=5 for display purpose. We will compare accuracy score in machine learning part for larger n_components=5,50,100 to analyze how n_components affects the model performance.
 
-
-```python
-
-lda_modeln5 = LDA(n_components=5,          
-                  max_iter=10, # default max learning iterations: 10. takes 3mins
-                  learning_method='online',   
-                  random_state=100,          # Random state
-                  batch_size=128,            # default num docs in each learning iter
-                  evaluate_every = 0,       # compute perplexity every n iters, default: Don't
-                  n_jobs =1,               # Don't use all available CPUs
-                  )
-lda_modeln5.fit(rev_vectorized)
-lda_output = lda_modeln5.transform(rev_vectorized)
-
-lda_n5_LogLikelihood=lda_modeln5.score(rev_vectorized)
-lda_n5_perp=lda_modeln5.perplexity(rev_vectorized)
-
-#----Diagnose model performance with perplexity and log-likelihood---
-#Log Likelyhood: Higher the better
-print("\nLog Likelihood Score: %.2f" %lda_n5_LogLikelihood) 
-
-#Perplexity: Lower the better. Perplexity = exp(-1. * log-likelihood per word)
-print("\nPerplexity: %.2f" %lda_n5_perp) 
-```
-
+    
+    5-topic model:
     
     Log Likelihood Score: -50135369.38
     
@@ -1630,14 +1464,6 @@ What particular topic does a document belong to? A dominant topic in a document 
 
 #### Display top 20 keywords in topics
 
-
-```python
-num_top_words = 20
-feature_names=c_vec.get_feature_names()
-print('Top 20 Words in topics found in the 5-topic lda_model')
-display_topics(lda_modeln5, feature_names, num_top_words)
-```
-
     Top 20 Words in topics found in the 5-topic lda_model
     Topic 0:
     bed room bathroom shower comfortable small comfy clean nice water good location pillow big bath size great coffee double large
@@ -1657,29 +1483,7 @@ Topic 2 talks about 'lcoation', 'transport', 'restaurant','parking'.<br>
 Topic 3 talks about 'staff', 'receptoin', 'service'.<br>
 Topic 4 talks about some negative aspects 'noise', 'small', 'old', 'bad', 'poor'.<br>
 
-#### Make a  Document - Topic Table 
-
-
-```python
-#Create Document - Topic Matrix
-lda_output=lda_modeln5.transform(rev_vectorized)
-
-#column names
-topicnames = ["Topic" + str(i) for i in range(lda_modeln5.n_components)]
-
-#index names
-docnames = ["Doc" + str(i) for i in range(len(df_txt))]
-
-#Make the pandas dataframe
-df_document_topic = pd.DataFrame(np.round(lda_output, 2), columns=topicnames, index=docnames)
-
-#Get dominant topic for each document
-dominant_topic = np.argmax(df_document_topic.values, axis=1)
-df_document_topic['dominant_topic'] = dominant_topic
-
-df_document_topics = df_document_topic.head(10)
-df_document_topics
-```
+#### Display a  Document - Topic Table for the First 10 Reviews
 
 <table border="0.8" class="dataframe">
   <thead>
@@ -1807,87 +1611,16 @@ lda_display_sk
 ```
 
 ![png](img/ldavis_skn5.png)
-For an interactive visualization, click [here](https://)
+For an interactive visualization, click [here]( https://houhouskldan5.herokuapp.com/)
 
 The five topics are seperated very well. The size of circles on the left indicates the prevalence of that topic, not consistent with the bar plot above???
 
 ## Build LDA Model with Gensim <a class="anchor" id="Build-LDA-Model-with-Gensim"></a>
-Since the LDA model with sklearn takes lots of computing resources for larger number of topics. We turn to gensim for building the LDA model. For gensim we need to tokenize the data and filter out stopwords. 
+Since Gensim is more efficient in topic modeling, we turn to gensim for building the LDA model. For gensim we need to tokenize the data and filter out stopwords. 
 
 ### Create the Dictionary and Corpus Needed for Topic Modeling
-Since the size of reviews is quite large, we randomly select some samples to train the model. We can evaluate our topic models by the holdout test set.
+Since the size of reviews is quite large, we split the reviews into training and test set with the ratio being 0.7. We can evaluate our topic models by the holdout test set. We clean and tokenize reviews via processing raw texts. We create a dictionary (association of a word to a numericID) and build a corpus (term Document Frequency-transform collections of texts to numeric form). Then we train a LDA model. We also calculate the log of perplexity an coherence score of the LDA model. 
 
-
-```python
-from sklearn.model_selection import train_test_split
-itrain, itest = train_test_split(range(df_txt.shape[0]), train_size=0.7,random_state=100)
-mask = np.zeros(df_txt.shape[0], dtype=np.bool)
-mask[itrain] = True
-
-rev_gens=df_txt['Rev_Lemmatized'][mask]
-
-#Prepare NLTK stopwords
-from nltk.corpus import stopwords
-stop_words = stopwords.words('english')
-stop_words.extend(['hotel'])
-
-
-
-#Tokenize and clean sentences to words 
-def sent_to_words(sentences):
-    for sentence in sentences:
-        yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))  # deacc=True removes punctuations
-
-
-
-def process_text(sentences):
-    #Create Corpus
-    txt_tokenized=list(sent_to_words(sentences))
-    #Remove stopwords
-    txt_tokenized = [[w for w in doc if w not in stop_words] for doc in txt_tokenized]
-    return txt_tokenized
-
-
-
-rev_tokenized=process_text(rev_gens)
-    #Create Dictionary-association word to numericID
-dictionary = gensim.corpora.Dictionary(rev_tokenized )
-    #Term Document Frequency-transform collections of texts to numeric form
-corpus = [dictionary.doc2bow(txt) for txt in rev_tokenized ]
-
-    #save dictionary and corpus
-pickle.dump(corpus, open('corpus.pkl', 'wb'))
-dictionary.save('dictionary.gensim')
-```
-
-
-```python
-def build_lda(revs,ntopics,passes=15):
-    """Tokenize and clean reviews by process_text, then create dictionary and corpus and build LDA model"""
-    ldamodel=gensim.models.ldamodel.LdaModel(corpus, num_topics = ntopics, id2word=dictionary, passes=15,random_state=100)
-    #ldamodel = gensim.models.ldamulticore.LdaMulticore(corpus, num_topics =ntopics, id2word=dictionary, passes=15,random_state=100) #Multicore very demanding on memory; can do for ntopics=10 but not 50 +
-    
-    #save ldamodel
-    ldamodel.save('model{0}.gensim'.format(ntopics))
-    topics = ldamodel.print_topics(num_words=10)
-    for topic in topics:
-        print('Topics:\n',topic)
-    
-    print('num_topic: %d' %ntopics)
-    
-    #Compute Perplexity
-    log_perplexity=ldamodel.log_perplexity(corpus)
-    print('\nPerplexity: %.2f' %(log_perplexity))  # a measure of how good the model is. lower the better.
-
-    #Compute Coherence Score
-    coherence_ldamodel= CoherenceModel(model=ldamodel, texts=rev_tokenized, dictionary=dictionary, coherence='c_v')
-    coherence= coherence_ldamodel.get_coherence()
-    print('\nCoherence Score: %.2f' %coherence)
-    
-    return ntopics,log_perplexity,coherence
-ntopics=5
-_=build_lda(rev_gens,ntopics=ntopics,passes=15)
-```
 
     Topics:
      (0, '0.070*"breakfast" + 0.061*"room" + 0.061*"staff" + 0.049*"good" + 0.043*"location" + 0.028*"friendly" + 0.027*"great" + 0.026*"clean" + 0.023*"helpful" + 0.022*"nice"')
@@ -1901,7 +1634,7 @@ _=build_lda(rev_gens,ntopics=ntopics,passes=15)
      (4, '0.090*"room" + 0.032*"bed" + 0.020*"bathroom" + 0.020*"small" + 0.019*"location" + 0.017*"shower" + 0.015*"good" + 0.012*"floor" + 0.011*"clean" + 0.011*"nice"')
     num_topic: 5
     
-    Perplexity: -6.84
+    Log_Perplexity: -6.84
     
     Coherence Score: 0.58
 
@@ -1933,25 +1666,9 @@ pyLDAvis.display(lda_display)
 
 ![png](img/ldavis_gensimn5.png)
 
-For an interactive visualization, click [here](https://)
+For an interactive visualization, click [here](https://houhougensimldan5.herokuapp.com/)
 
-We also try the 10-topic LDA model. 
-```python
-ntopics=10
-
-_=build_lda(rev_gens,ntopics=ntopics,passes=15)  #1.5hour
-
-dictionary = gensim.corpora.Dictionary.load('dictionary.gensim')
-corpus = pickle.load(open('corpus.pkl', 'rb'))
-lda_gensim = gensim.models.ldamodel.LdaModel.load('model{0}.gensim'.format(ntopics))
-lda_displayn10 = pyLDAvis.gensim.prepare(lda_gensim, corpus, dictionary, sort_topics=False)
-
-#Save the visualization in a html format
-pyLDAvis.save_html(lda_displayn10, 'gensimldan{0}.html'.format(ntopics))
-
-#Interactive visualization
-pyLDAvis.display(lda_displayn10)
-```
+We also try the 10-topic LDA model and the topics represented by the top 10 words are displayed below. 
 
     Topics:
      (0, '0.094*"staff" + 0.085*"room" + 0.056*"location" + 0.054*"breakfast" + 0.046*"good" + 0.045*"friendly" + 0.040*"great" + 0.040*"clean" + 0.039*"helpful" + 0.031*"nice"')
@@ -1982,39 +1699,15 @@ pyLDAvis.display(lda_displayn10)
 
 ![png](img/ldavis_gensimn10.png)
 
-For an interactive visualization, click [here](https://)
+For an interactive visualization, click [here](https://houhougensimldan10.herokuapp.com/)
 
 Compared to the 5-topic model, the 10-topic model has lower perplexity and higher coherence score. But the visualization shows that many topics in the later model are overlapped with each other.
 
 
 ### Test on Holdout data
 
-```python
-#dictionary = gensim.corpora.Dictionary.load('dictionary.gensim')
-#corpus = pickle.load(open('corpus.pkl', 'rb'))
-lda_gensimn10 = gensim.models.ldamodel.LdaModel.load('model10.gensim')
-lda_gensimn5 = gensim.models.ldamodel.LdaModel.load('model5.gensim')
+We randomly sample 1 review from the holdout test data process it follwing the same steps as the training set. We use the topic model to test what topics this review talks about. Below shows the sampled review and the corresponding topics. 
 
-
-
-
-new_doc=df_txt['Rev_Lemmatized'][~mask].sample(1,random_state=100)
-doc_tokenized=process_text(new_doc)
-doc_bow=[dictionary.doc2bow(d) for d in doc_tokenized]
-dtm=lda_gensimn10.get_document_topics(doc_bow)
-print(new_doc.values)
-
-
-print('For 10-topic model: ')
-for t in dtm:
-    print(t)
-
-dtm=lda_gensimn5.get_document_topics(doc_bow)
-print('For 5-topic model: ')
-for t in dtm:
-    print(t)
-
-```
 
     ['make room reservation booking pay room separate make huge mess charge time confuse key room reservation name room location good']
     For 10-topic model: 
@@ -2025,27 +1718,15 @@ for t in dtm:
 
 # Build Machine Learning Models for Prediction <a class="anchor" id="Build-Machine-Learning-Models-for-Prediction"></a> 
 
-Since we focus on the review texts in this part, we build machine learning models using features generated from texts. Before that we need to create our target variable 'label'. Since a reviewer's score ranges from 0 to 10, for simplicity, we classify a hotel review as 'poor' if the score is below 7.9 and 'good' if it's between 7.9 and 9.6 otherwise 'excellent'.
+Since we focus on the review texts in this part, we build machine learning models using features generated from texts. Before that we need to create our target variable 'label'. Since a reviewer's score ranges from 0 to 10, for simplicity, we classify a hotel review as 'poor' if the score is below 8 and 'good' if it's equal or above 8.
 
 ## Create a Target Column <a class="anchor" id="Create-a-Target-Column"></a> 
 
-
-The figure below visualizes the distribution of reviewer score.
-
-![png](img/output_63_0.png)
-
-
-```python
-#Add 'label' by converting 'continuous' Reviewer_Score into 3 categories
-df_txt['label']=pd.qcut(df_txt.Reviewer_Score,3,labels=['Poor','Good','Excellent'])
-(df_txt.label.value_counts(normalize=True).sort_index()*100).plot(kind='bar',color='c',rot=0,figsize=(10,8));
-plt.ylabel('Percent (%)')
-plt.xlabel('Label of Hotels');
-```
-
+    threshold of poor|good:  8.0
 
 ![png](img/output_66_0.png)
 
+Above is a bar plot of reviewer score falling into the two buckets. The majority class is 'Good' with a proportion of 64% while 'Poor' takes a portion of 36%.
 
 How is the length of lemmatized clean reviews related with the reviewer score?
 
@@ -2067,7 +1748,7 @@ print('Correlation: %.2f'%(df_txt.Len_LemRev_char.corr(df_txt.Reviewer_Score)))
 The above figure indicates that the longer the character length of a review the lower the score tends to be.
 
 
-Visualize the distribution of length of review strings by review label.
+Visualize the distribution of length of review strings by 'label'.
 
 
 ![png](img/output_71_0.png)
@@ -2083,17 +1764,10 @@ Visualize the distribution of length of review strings by trip type.
 
 Is the average length of reviews significantly different for different trip categories ('business' trip and 'leisure trip')? We will investigate this issue by performing the t-test for means of two independent samples of reviews. The null hypothesis is that 2 independent samples (i.e., character length of reviews for business trip and that for leisure trip) have identical average length of characters. This is a two-sided test for 2 samples of different sizes. 
 
-
-```python
-np.round(df_txt.groupby('Trip_Type')['Len_LemRev_char'].size())#.mean())
-```
-
     Trip_Type
     Business trip     66733
     Leisure trip     350782
     Name: Len_LemRev_char, dtype: int64
-
-
 
 
 ```python
@@ -2104,7 +1778,6 @@ len_leis=df_txt[idx_leis]['Len_LemRev_char']
 len_busi=df_txt[~idx_leis]['Len_LemRev_char']
 
 t, p=stats.ttest_ind(len_leis, len_busi, equal_var = False)
-#This test assumes that the populations have identical variances by default.
 #equal_var=False: perform Welch’s t-test, which does not assume equal population variance 
 print('t-statistic: %.2f' % (t),'\npvalue: %.2f' % (p))
 ```
@@ -2116,58 +1789,28 @@ print('t-statistic: %.2f' % (t),'\npvalue: %.2f' % (p))
 Since the pvalue is nearly zero, we reject the null hypothesis and conclude that the average length of characters is different for reviews on leisure trip and business trip.
 
 
-```python
-np.round(df_txt.groupby('label')['Len_LemRev_char'].size())#.mean())
-```
-
-
     label
     Poor         154949
-    Good         184068
-    Excellent     90447
+    Good         274515
     Name: Len_LemRev_char, dtype: int64
 
 
 ```python
-from scipy import stats
-
 idx_poor=df_txt['label']=='Poor'
-idx_good=df_txt['label']=='Good'
-idx_exc=df_txt['label']=='Excellent'
-
-
 len_poor=df_txt[idx_poor]['Len_LemRev_char']
-len_good=df_txt[idx_good]['Len_LemRev_char']
-len_exc=df_txt[idx_exc]['Len_LemRev_char']
+len_good=df_txt[~idx_poor]['Len_LemRev_char']
 
 
 t, p=stats.ttest_ind(len_poor, len_good, equal_var = False)
-#This test assumes that the populations have identical variances by default.
 #equal_var=False: perform Welch’s t-test, which does not assume equal population variance 
 print('len_rev: poor v.s. good')
 print('t-statistic: %.2f' % (t),'\npvalue: %.2f\n' % (p))
-
-t, p=stats.ttest_ind(len_poor, len_exc, equal_var = False)
-print('len_rev: poor v.s. exc')
-print('t-statistic: %.2f' % (t),'\npvalue: %.2f\n' % (p))
-
-t, p=stats.ttest_ind(len_good, len_exc, equal_var = False)
-print('len_rev: good v.s. exc')
-print('t-statistic: %.2f' % (t),'\npvalue: %.2f' % (p))
 ```
 
     len_rev: poor v.s. good
-    t-statistic: 42.40 
+    t-statistic: 53.98 
     pvalue: 0.00
     
-    len_rev: poor v.s. exc
-    t-statistic: 59.76 
-    pvalue: 0.00
-    
-    len_rev: good v.s. exc
-    t-statistic: 25.21 
-    pvalue: 0.00
-
 
 Since the pvalue is nearly zero for any two types of review categories, we reject the null hypothesis and conclude that the character length of reviews for different review categories are different.
 
@@ -3378,4 +3021,5 @@ We notice that some reviewers give very low score but posted both positive and n
 # Deliverables <a class="anchor" id="Deliverables"></a>
 Read [milestone report](https://github.com/phyhouhou/SpringboardProjects/blob/master/SecondCapstoneProject/2ndCapstoneProject_MilestoneReport/2ndCapstoneProject_Milestone.ipynb) for details and codes in data cleaning and exploratory data analysis.<br>
 Read [SecondCapstoneProject_NLP_ML](https://github.com/phyhouhou/SpringboardProjects/blob/master/SecondCapstoneProject/2ndCapstoneProjectFinalReport/SecondCapstoneProject_NLP_ML.ipynb) for details about feature engineering and model evaluations.<br>
+
 
