@@ -1388,6 +1388,33 @@ Each review is a mixture of both negative and positive part. Will the LDA model 
         
 We build the LDA model using bag-of-word features 'rev_vectorized' generated above and set the number of topics to be 2. We then implement the LDA algorithm and calcuate the loglikelihood score and perplexity of the model.  
 
+```python
+lda_modeln2 = LDA(n_components=2,          
+                  max_iter=10, # default max learning iterations: 10. with the sample, this code takes mins
+                  learning_method='online',   
+                  random_state=100,          # Random state
+                  batch_size=128,            # default num docs in each learning iter
+                  evaluate_every = 0,       # compute perplexity every n iters, default: Don't
+                  n_jobs =1,               # Dont't use all available CPUs
+                  )
+
+lda_modeln2.fit(rev_vectorized)
+lda_output = lda_modeln2.transform(rev_vectorized)
+
+lda_n2_LogLikelihood=lda_modeln2.score(rev_vectorized)
+lda_n2_perp=lda_modeln2.perplexity(rev_vectorized)
+
+
+print('Model parameters:')
+pprint(lda_modeln2.get_params())
+
+#Log Likelyhood: Higher the better
+print("\nLog Likelihood Score: %.2f" %lda_n2_LogLikelihood) 
+
+#Perplexity: Lower the better. Perplexity = exp(-1. * log-likelihood per word)
+print("\nPerplexity: %.2f" %lda_n2_perp) 
+```
+
     Model parameters:
     {'batch_size': 128,
      'doc_topic_prior': None,
@@ -1613,7 +1640,7 @@ lda_display_sk
 ![png](img/ldavis_skn5.png)
 For an interactive visualization, click [here]( https://houhouskldan5.herokuapp.com/)
 
-The five topics are seperated very well. The size of circles on the left indicates the prevalence of that topic, not consistent with the bar plot above???
+The five topics are seperated very well. The size of circles on the left indicates the prevalence of that topic.
 
 ## Build LDA Model with Gensim <a class="anchor" id="Build-LDA-Model-with-Gensim"></a>
 Since Gensim is more efficient in topic modeling, we turn to gensim for building the LDA model. For gensim we need to tokenize the data and filter out stopwords. 
@@ -1731,15 +1758,7 @@ Above is a bar plot of reviewer score falling into the two buckets. The majority
 How is the length of lemmatized clean reviews related with the reviewer score?
 
 
-```python
-#Lenghth of characters in a full-review
-df_txt['Len_LemRev_char']=df_txt['Rev_Lemmatized'].apply(len)
-sns.lmplot(y='Reviewer_Score',x='Len_LemRev_char',data=df_txt,y_jitter=0.05,size=10,scatter_kws={'alpha':0.3});
-print('Correlation: %.2f'%(df_txt.Len_LemRev_char.corr(df_txt.Reviewer_Score)))
-```
-
     Correlation: -0.12
-
 
 
 ![png](img/output_69_1.png)
@@ -1820,24 +1839,17 @@ Since the pvalue is nearly zero for any two types of review categories, we rejec
 
 
 ```python
-#LabelEncoding the review categories
-df_txt_label=df_txt[['Reviewer_Score','Rev_Lemmatized','label']]
-df_txt_label['label_cat']=df_txt_label.label.astype('category').cat.codes
-lab_code=sorted(dict(zip(df_txt_label['label'],df_txt_label['label_cat'])).items(),key=lambda x: x[1])
-lab_code
+#Use LabelBinarizer to encode labels
+lab_bin=LabelBinarizer()
+y=lab_bin.fit_transform(df_txt['label'])
 ```
-
-
-    [('Poor', 0), ('Good', 1), ('Excellent', 2)]
-
-
 
 **Split data into training and test set**
 
 
 ```python
-X_train, X_test, y_train, y_test=train_test_split(df_txt_label['Rev_Lemmatized'],df_txt_label['label_cat'],test_size=0.3,random_state=100)
-
+X_train, X_test, y_train, y_test = train_test_split(df_txt['Rev_Lemmatized'], y,test_size=0.3,
+    random_state=100)
 y_train.shape, y_test.shape
 ```
 
@@ -1874,524 +1886,179 @@ def run_pipeline(steps,X_train,y_train,X_test,y_test):
 
 ## Use bag-of-word Features for Prediction <a class="anchor" id="Use-bag-of-word-Features-for-Prediction"></a> 
 
+### Dummy Classifier
+
+we use the dummy classifer to get a baseline. In the dummy classifier, we use the 'most_frequent' strategy, hence the classifer always predict dominant class 'Good'.
+
+
+
+**Build up the pipeline**
+
+```python
+bow_steps_dummy=[('vectorise',CountVectorizer(
+                                        min_df=10,
+                                        stop_words='english',
+                                        token_pattern='[a-zA-Z]{3,}')),
+         ('clf',DummyClassifier(strategy = 'most_frequent'))]
+
+bow_pipe_dummy,bow_training_accuracy_dummy, bow_test_accuracy_dummy, bow_conf_mtrix_dummy, bow_class_report_dummy=run_pipeline(bow_steps_dummy,X_train,y_train,X_test,y_test)
+```
+
+    Accuracy of training set: 0.64
+    Accuracy of test set: 0.64
+
+    Confusion Matrix:
+     [[82592     0]
+     [46248     0]]
+
+    Classificatio Report:
+                  precision    recall  f1-score   support
+
+              0       0.64      1.00      0.78     82592
+              1       0.00      0.00      0.00     46248
+
+    avg / total       0.41      0.64      0.50    128840
+
+
+### Naive Bayes Classifier
+
+we use the Naive Bayes classifer to get a better performance.
+
+
+
 **Build up the pipeline**
 
 
+
 ```python
-bow_steps=[('vectorise',CountVectorizer(min_df=10,stop_words='english',token_pattern='[a-zA-Z]{3,}')),
+bow_steps_NB=[('vectorise',CountVectorizer(
+                                        min_df=10,
+                                        stop_words='english',
+                                        token_pattern='[a-zA-Z]{3,}')),
          ('clf',MultinomialNB())]
 
-bow_pipe,bow_training_accuracy, bow_test_accuracy, bow_conf_mtrix, bow_class_report=run_pipeline(bow_steps,X_train,y_train,X_test,y_test)
+bow_pipe_NB,bow_training_accuracy_NB, bow_test_accuracy_NB, bow_conf_mtrix_NB, bow_class_report_NB=run_pipeline(bow_steps_NB,X_train,y_train,X_test,y_test)
 ```
 
-    Accuracy of training set: 0.62
-    Accuracy of test set: 0.61
-    
+    Accuracy of training set: 0.78
+    Accuracy of test set: 0.78
+
     Confusion Matrix:
-     [[30356 14697  1195]
-     [11021 33704 11025]
-     [ 1976 10811 14055]]
-    
+     [[69757 12835]
+     [15755 30493]]
+
     Classificatio Report:
                   precision    recall  f1-score   support
-    
-              0       0.70      0.66      0.68     46248
-              1       0.57      0.60      0.59     55750
-              2       0.53      0.52      0.53     26842
-    
-    avg / total       0.61      0.61      0.61    128840
-    
+
+              0       0.82      0.84      0.83     82592
+              1       0.70      0.66      0.68     46248
+
+    avg / total       0.78      0.78      0.78    128840    
 
 
-
-```python
-y_pred=bow_pipe.predict(X_test)
-
-
-plt.figure(figsize=(12,12))
-ax=sns.heatmap(bow_conf_mtrix, annot=True, fmt="d",linewidths=.5, square = True, cmap = 'Blues_r',annot_kws={'size':16});#fmt=".3f", 
-plt.ylabel('Actual label');
-#plt.xlabel('Predicted label\naccuracy={:0.2f}; misclass={:0.2f}'.format(accuracy_score(y_test,  y_pred), 1-accuracy_score(y_test,  y_pred)))
-plt.xlabel('Predicted label\naccuracy={:0.2f}'.format(accuracy_score(y_test,  y_pred)))
-
-
-plt.title('Confusion Matrix', size = 18)
-ax.xaxis.set_ticklabels(['Poor', 'Good', 'Excellent'])
-ax.yaxis.set_ticklabels(['Poor', 'Good', 'Excellent']);
-```
-
+The plot below displays the confusion matrix.
 
 ![png](img/output_89_0.png)
 
 
-### Grid Search Hyperparameters
-We define a customized gridsearch function and specify our search parameters. Since it takes time to run the code, the calcualtion is actually run on a cluster. 
+#### Strongly Predictive Features 
+We build a dataset where each row contains just one word (identity matrix) and then uses the trained classifier to classify the one-word review. The probability for each row represents the probability that the review will be classified as 'poor'. We can see which words have the highest probability in ('poor') and which words have the lowest probability (low probability in being 'poor', hence high probability in being 'good').
 
-```python
-bow_pipe.named_steps.keys()
-```
-
-    dict_keys(['vectorise', 'clf'])
-
-
-
-
-```python
-def my_grid_search(model,search_params,X_train,y_train,X_test,y_test,nfolds=5,scoring='accuracy'):
-    gsmodel= GridSearchCV(model, param_grid=search_params,scoring=scoring,cv=nfolds)
-    gsmodel=gsmodel.fit(X_train,y_train)
-    y_pred=gsmodel.predict(X_test)
-    print('Best paras:\n')
-    pprint(gsmodel.best_params_)
-    print('\nBest score: %.2f' % gsmodel.best_score_)
-    print('\nClassification report: \n',classification_report(y_test,y_pred))
-    
-    return gsmodel,gsmodel.best_params_,gsmodel.best_score_,classification_report(y_test,y_pred)
-
-
-search_params = dict(vectorise__binary=[True,False],
-                  vectorise__min_df=[1,10],
-                  vectorise__ngram_range=[(1,1),(1,2)],
-                  clf__alpha=[0.1,1,10]
-                 )
-
-bowGS,_,_,bowGS_class_report=my_grid_search(bow_pipe,search_params,X_train,y_train,X_test,y_test)
-
-bow_GridSearch_training_accuracy=bowGS.score(X_train,y_train)
-bow_GridSearch_test_accuracy=bowGS.score(X_test,y_test)
-bow_GridSearch_conf_mtrix=confusion_matrix(y_test,bowGS.predict(X_test))
-bow_GridSearch_class_report=bowGS_class_report
-
-
-#Save model using pickle
-pickle.dump(bowGS, open('save/bowGridSearch.sav', 'wb'))
-#load the model from disk
-#bow_GS_model=pickle.load(open('save/bowGridSearch.sav', 'rb'))
-
-pickle.dump(bow_GridSearch_training_accuracy, open('save/bow_GridSearch_training_accuracy.sav', 'wb'))
-pickle.dump(bow_GridSearch_test_accuracy, open('save/bow_GridSearch_test_accuracy.sav', 'wb'))
-pickle.dump(bow_GridSearch_conf_mtrix, open('save/bow_GridSearch_conf_mtrix.sav', 'wb'))
-pickle.dump(bow_GridSearch_class_report, open('save/bow_GridSearch_class_reportt.sav', 'wb'))
-```
-
-We load the results to the notebook. 
-
-```python
-#Load model using pickle
-bowGS=pickle.load(open('save/bowGridSearch.sav', 'rb'))
-bow_GridSearch_training_accuracy=pickle.load(open('save/bow_GridSearch_training_accuracy.sav', 'rb'))
-bow_GridSearch_test_accuracy=pickle.load(open('save/bow_GridSearch_test_accuracy.sav', 'rb'))
-bow_GridSearch_conf_mtrix=pickle.load(open('save/bow_GridSearch_conf_mtrix.sav', 'rb'))
-bow_GridSearch_class_report=pickle.load(open('save/bow_GridSearch_class_reportt.sav', 'rb'))
-```
-
-
-```python
-print('Best paras:\n')
-pprint(bowGS.best_params_)
-print('\nBest score: %.2f' % bowGS.best_score_)
-print('\nClassification report: \n',bow_GridSearch_class_report)
-```
-
-    Best paras:
-    
-    {'clf__alpha': 10,
-     'vectorise__binary': True,
-     'vectorise__min_df': 10,
-     'vectorise__ngram_range': (1, 2)}
-    
-    Best score: 0.62
-    
-    Classification report: 
-                  precision    recall  f1-score   support
-    
-              0       0.71      0.68      0.70     46248
-              1       0.57      0.70      0.63     55750
-              2       0.60      0.38      0.46     26842
-    
-    avg / total       0.63      0.62      0.62    128840
-    
-The average performance is increased after grid searching hyperparameters but not significantly.
-
-### Strongly Predictive Features 
-We build a dataset where each row contains just one word (identity matrix) and then uses the trained classifier to classify the one-word review. The probability for each row represents the probability that the review will be classified as 'poor'. We can see which words have the highest probability in ('poor') and which words have the lowest probability (low probability in being 'poor', hence high probability in being 'good' or 'excellent).
-
-
-```python
-#Initialize the CountVectorizer with optimal hyperparameters
-vectorizer=CountVectorizer(analyzer='word',       
-                             min_df=10,
-                             ngram_range=(1, 2),
-                             stop_words='english',             
-                             lowercase=True,                  
-                             token_pattern='[a-zA-Z]{3,}',  
-                            binary=True,
-                       )
-#Build the vocabulary by 'fit'
-vectorizer.fit(df_txt_label['Rev_Lemmatized'])
-
-
-#Make X and y
-def make_xy(df_txt_label, vectorizer=None):
-    if vectorizer is None:
-        vectorizer = CountVectorizer()
-    X = vectorizer.fit_transform(df_txt_label.Rev_Lemmatized)
-    X = X.tocsc()  
-    y = df_txt_label.label_cat.values
-    return X, y
-X, y = make_xy(df_txt_label,vectorizer)
-
-
-#Set the train and test masks
-itrain, _ = train_test_split(range(df_txt_label.shape[0]), test_size=0.3,random_state=100)
-mask = np.zeros(df_txt_label.shape[0], dtype=np.bool)
-mask[itrain] = True
-
-xtrain=X[mask]
-ytrain=y[mask]
-xtest=X[~mask]
-ytest=y[~mask]
-
-#Train the Naive Bayes model
-clf = MultinomialNB(alpha=10).fit(xtrain, ytrain)
-words = np.array(vectorizer.get_feature_names())
-
-x = np.eye(xtest.shape[1])
-
-#'poor'
-probs = clf.predict_log_proba(x)[:, 0]
-ind = np.argsort(probs)[::-1]#reverse the order such that decending order
-
-good_words =words[ind[:10]]   
-bad_words =words[ind[-10:]]
-
-good_prob = probs[ind[:10]]
-bad_prob = probs[ind[-10:]]
-
-print("Good words\t     P(Poor | word)")
-for w, p in zip(good_words, good_prob):
-    print("{:>20}".format(w), "{:.2f}".format(np.exp(p)))
-    
-print("Bad words\t     P(Poor | word)")
-for w, p in zip(bad_words, bad_prob):
-    print("{:>20}".format(w), "{:.2f}".format(np.exp(p)))
-
-
-```
 
     Good words	     P(Poor | word)
-              staff rude 0.90
-              room dirty 0.89
-                  filthy 0.89
+                  filthy 0.90
                unhelpful 0.87
-              dirty room 0.87
-            carpet dirty 0.86
-        staff unfriendly 0.86
-         staff unhelpful 0.85
+                impolite 0.87
+                 unclean 0.86
+              disgusting 0.85
+                 disgust 0.85
                    dirty 0.85
-       uncomfortable bed 0.85
+                arrogant 0.84
+              unfriendly 0.83
+                   worst 0.83
     Bad words	     P(Poor | word)
-               feel home 0.06
-           amazing staff 0.06
-             stay highly 0.06
-      absolutely amazing 0.06
-       definitely return 0.05
-         definitely come 0.05
-         absolutely love 0.05
-         definitely stay 0.05
-               love stay 0.04
-        highly recommend 0.03
+               amazingly 0.08
+            immaculately 0.08
+                hesitate 0.08
+              immaculate 0.07
+             beautifully 0.07
+                  highly 0.07
+              spotlessly 0.06
+              impeccable 0.06
+                     gem 0.06
+               memorable 0.06
+               
 
-
-**Compare different classifiers**<br>
-It is quite time-consuming, we will perform the calculations in cluster and load results to notebook.
-
-
-```python
-
-clfs=[MultinomialNB(),LogisticRegression(),SGDClassifier(loss="log")]
-model_clf=['MultinomialNB','LogisticRegression','SGDClassifier']
-search_params=[dict(vectorise__binary=[True,False],
-                    #vectorise__min_df=[1,5,10],
-                    vectorise__ngram_range=[(1,1),(1,2)],
-                    clf__alpha=[0.01,0.1,1,10]
-                 ),
-              dict(vectorise__binary=[True,False],
-                    #vectorise__min_df=[1,5,10],
-                    vectorise__ngram_range=[(1,1),(1,2)],
-                   clf__C=[0.01,0.1,1,10]
-                 ),
-              dict(vectorise__binary=[True,False],
-                   #vectorise__min_df=[1,5,10],
-                    vectorise__ngram_range=[(1,1),(1,2)],
-                 )]
-
-
-nfolds=5
-for i in range(len(clfs)):
-    steps=[('vectorise',CountVectorizer(stop_words='english')),
-         ('clf',clfs[i])]
-    pipe=Pipeline(steps)
-    
-    print('Model: ', model_clf[i])    
-    grid_search =my_grid_search(pipe,search_params[i],X_train,y_train,X_test,y_test,nfolds,scoring='accuracy')
-```
-
-Below are the results for the grid search of different classifiers.
-
-    Model:  MultinomialNB
-    {'clf__alpha': 1, 'vectorise__binary': False, 'vectorise__ngram_range': (1, 2)}
-
-    Best score: 0.62
-
-    Classification report: 
-             
-                 precision    recall  f1-score   support
-
-              0       0.72      0.66      0.69     46248
-              1       0.56      0.75      0.64     55750
-              2       0.65      0.29      0.40     26842
-
-    avg / total       0.64      0.62      0.61    128840
-
-    Model:  LogisticRegression
-    {'clf__C': 0.01, 'vectorise__binary': False, 'vectorise__ngram_range': (1, 2)}
-
-    Best score: 0.63
-
-    Classification report: 
-                  precision    recall  f1-score   support
-
-              0       0.71      0.72      0.71     46248
-              1       0.58      0.71      0.64     55750
-              2       0.64      0.32      0.43     26842
-
-    avg / total       0.64      0.63      0.62    128840
-
-    Model:  SGDClassifier
-    {'vectorise__binary': True, 'vectorise__ngram_range': (1, 2)}
-
-    Best score: 0.63
-
-    Classification report: 
-                  precision    recall  f1-score   support
-
-              0       0.73      0.70      0.71     46248
-              1       0.57      0.73      0.64     55750
-              2       0.64      0.32      0.42     26842
-
-    avg / total       0.64      0.63      0.62    128840
-
-Again the average performance is increased compared to the initial NaiveBayes model without grid search, but the increase is not significant.
 
 ## Use Tfidf-weighted Features for Prediction <a class="anchor" id="Use-Tfidf-weighted-Features-for-Prediction"></a> 
 
  
-We already have a learned CountVectorizer, we use it with a TfidfTransformer to generate the Tfidf-weighted features for prediction.
+We already have a learned CountVectorizer, we use it with a TfidfTransformer to generate the Tfidf-weighted features for prediction. We also include bigram features for a better performance.
 
 
-```python
-steps=[('vectorise', CountVectorizer(analyzer='word',       
-                             min_df=10,
-                             ngram_range=(1, 2),
-                             stop_words='english',             
-                             lowercase=True,                  
-                             token_pattern='[a-zA-Z]{3,}',  
-                            #binary=False,
-                       )),
-       ('transform',TfidfTransformer()),
-       ('clf',MultinomialNB())]
-res_tfidf_NB_model=run_pipeline(steps,X_train,y_train,X_test,y_test)      
-```
+    Accuracy of training set: 0.81
+    Accuracy of test set: 0.79
 
-    Accuracy of training set: 0.66
-    Accuracy of test set: 0.62
-    
     Confusion Matrix:
-     [[31528 14384   336]
-     [10837 40223  4690]
-     [ 1821 16322  8699]]
-    
+     [[72660  9932]
+     [16874 29374]]
+
     Classificatio Report:
                   precision    recall  f1-score   support
-    
-              0       0.71      0.68      0.70     46248
-              1       0.57      0.72      0.64     55750
-              2       0.63      0.32      0.43     26842
-    
-    avg / total       0.63      0.62      0.61    128840
-    
 
-Above is the results generated with a Naive Bayes classifier. Below we choose the LogisticRegressrion as the classifier. The average performance is slightly enchanced.
+              0       0.81      0.88      0.84     82592
+              1       0.75      0.64      0.69     46248
 
-```python
-steps=[('vectorise', CountVectorizer(analyzer='word',       
-                             min_df=10,
-                             ngram_range=(1, 2),
-                             stop_words='english',             
-                             lowercase=True,                  
-                             token_pattern='[a-zA-Z]{3,}',  
-                            #binary=False,
-                       )),
-       ('transform',TfidfTransformer()),
-       ('clf',LogisticRegression())]
-res_tfidf_Lg_model=run_pipeline(steps,X_train,y_train,X_test,y_test)      
-```
-
-    Accuracy of training set: 0.70
-    Accuracy of test set: 0.63
-    
-    Confusion Matrix:
-     [[33665 12035   548]
-     [12295 37170  6285]
-     [ 1910 14498 10434]]
-    
-    Classificatio Report:
-                  precision    recall  f1-score   support
-    
-              0       0.70      0.73      0.72     46248
-              1       0.58      0.67      0.62     55750
-              2       0.60      0.39      0.47     26842
-    
-    avg / total       0.63      0.63      0.62    128840
+    avg / total       0.79      0.79      0.79    128840
     
 
 
 ### Feed Less TfidfVectorized Features to Classifier 
-We select only some (rather than all) features by implementing the most common feature selection technique for text mining, i.e., the chi-squared  ($\chi2$) method to see if the accuracy gets improved on test data set.
+We select only 5000 features by implementing the most common feature selection technique for text mining, i.e., the chi-squared  ($\chi2$) method to see if the accuracy gets improved on test data set.
 
 
-```python
-tfidf_vec = TfidfVectorizer(min_df=10,
-                            ngram_range=(1, 2),
-                            stop_words='english',
-                            token_pattern='[a-zA-Z]{3,}',
-                           )
+    Accuracy of training set: 0.79
+    Accuracy of test set: 0.79
 
-X, y = make_xy(df_txt_label,tfidf_vec)
-X_new = SelectKBest(chi2, k=5000).fit_transform(X, y)
-
-
-itrain, _ = train_test_split(range(df_txt_label.shape[0]), test_size=0.3,random_state=100)
-mask = np.zeros(df_txt_label.shape[0], dtype=np.bool)
-mask[itrain] = True
-
-
-
-Xtrain=X_new[mask]
-ytrain=y[mask]
-Xtest=X_new[~mask]
-ytest=y[~mask]
-
-steps=[('clf',MultinomialNB())]
-
-res_tfidf_NB_model2=run_pipeline(steps,Xtrain,ytrain,Xtest,ytest)            
-```
-
-    Accuracy of training set: 0.62
-    Accuracy of test set: 0.62
-    
     Confusion Matrix:
-     [[30375 15714   159]
-     [ 9648 43050  3052]
-     [ 1550 18456  6836]]
-    
+     [[75606  6986]
+     [20078 26170]]
+
     Classificatio Report:
                   precision    recall  f1-score   support
-    
-              0       0.73      0.66      0.69     46248
-              1       0.56      0.77      0.65     55750
-              2       0.68      0.25      0.37     26842
-    
-    avg / total       0.65      0.62      0.61    128840
+
+              0       0.79      0.92      0.85     82592
+              1       0.79      0.57      0.66     46248
+
+    avg / total       0.79      0.79      0.78    128840
     
 
-The average precision is increased when we use the most important 5000 word features instead of all of the word features.
+The average precision is not bad when we use the most important 5000 word features instead of all of the word features.
 
 
 ## Use sklearn LDA Document Topics for Prediction <a class="anchor" id="Use-sklearn-LDA-Document-Topics-for-Prediction"></a> 
 
-How well does the model perform if we choose the topics generated by LDA models for prediction?
+How well does the model perform if we choose the topics generated by LDA models as features for prediction? We use the 5-topic LDA model for extracted word features. It is a significant dimension reducion.
 
-```python
-#X_train, X_test, y_train, y_test=train_test_split(df_txt_label['Rev_Lemmatized'],df_txt_label['label_cat'],test_size=0.3,random_state=100)
+    Accuracy of training set: 0.65
+    Accuracy of test set: 0.65
 
-steps=[('vectorise',CountVectorizer(analyzer='word',       
-                             min_df=10,                       
-                             stop_words='english',             
-                             lowercase=True,                  
-                             token_pattern='[a-zA-Z]{3,}',  
-   )),
-       ('LDA', LDA(n_components=5, random_state=100)),
-       ('clf',MultinomialNB())]
-
-res_ldan5=run_pipeline(steps,X_train,y_train,X_test,y_test)
-```
-
-    Accuracy of training set: 0.53
-    Accuracy of test set: 0.53
-    
     Confusion Matrix:
-     [[20962 25286     0]
-     [ 7970 47780     0]
-     [ 1757 25085     0]]
-    
+     [[81782   810]
+     [44408  1840]]
+
     Classificatio Report:
                   precision    recall  f1-score   support
-    
-              0       0.68      0.45      0.54     46248
-              1       0.49      0.86      0.62     55750
-              2       0.00      0.00      0.00     26842
-    
-    avg / total       0.46      0.53      0.46    128840
+
+              0       0.65      0.99      0.78     82592
+              1       0.69      0.04      0.08     46248
+
+    avg / total       0.66      0.65      0.53    128840
   
-The word features built by the 5-topic LDA model could predict 'poor' and 'good' but not 'excellent'. The average performance is rather poor.
-
-We also tested with 50-topic and 100-topic LDA model. Below are the results:
-    
-    ntopics=50
-    Accuracy of training set: 0.49
-    Accuracy of test set: 0.49
-
-     Confusion Matrix:
-     [[10674 35574     0]
-     [ 3342 52408     0]
-     [  841 26001     0]]
-
-     Classificatio Report:
-                  precision    recall  f1-score   support
-
-              0       0.72      0.23      0.35     46248
-              1       0.46      0.94      0.62     55750
-              2       0.00      0.00      0.00     26842
-
-    avg / total       0.46      0.49      0.39    128840
-
-
-    ntopics=100
-    Accuracy of training set: 0.47
-    Accuracy of test set: 0.48
-
-    Confusion Matrix:
-    [[ 8717 37531     0]
-    [ 2605 53145     0]
-    [  592 26250     0]]
-
-    Classificatio Report:
-                  precision    recall  f1-score   support
-
-              0       0.73      0.19      0.30     46248
-              1       0.45      0.95      0.62     55750
-              2       0.00      0.00      0.00     26842
-
-    avg / total       0.46      0.48      0.37    128840
-
-As the number of topics increase, the LDA model can predict 'poor' with higher precision and 'good' with higher recall and misclassify less 'Excellent' as 'poor' and less 'good' as 'poor'. The model doesn't mistake 'poor' or 'good' as 'excellent' and still couldn't predict 'excellent' as 'excellent'.
+The word features built by the 5-topic LDA model could predict 'good' with a high recall but 'poor' with a very low recall. The average performance is rather poor. We've lost information due to the dimension reduction.
 
 
 ## Use Gensim LDA Document Topics for Prediction <a class="anchor" id="Use-Gensim-LDA-Document-Topics-for-Prediction"></a> 
-
-
 
 Since the gensim LDA features couldn't be directly used for prediction, we first get the document topics from the model and then convert it to numpy array, a form ready to be used for prediction. We also use the Functiontransformer to turn a python function into an object that a scikit-learn pipeline can understand.  
 ```python
@@ -2410,277 +2077,50 @@ def gensim_lda_feature(doc,dictionary,corpus,num_topics,ldamodel):
     return dtm_numpy
 ```
 
-
-```python
-X_rev=df_txt_label['Rev_Lemmatized']
-y=df_txt_label['label_cat']
+The 5-topic gensim LDA topic features has better average performace than that of sklearn LDA topic features. But still the recall (correctly detected 'Poor' instances) of 'Poor' is rather too low.
 
 
-#Split data into training and test set
-itrain, _ = train_test_split(range(df_txt_label.shape[0]), test_size=0.3,random_state=100)
-mask = np.zeros(df_txt_label.shape[0], dtype=np.bool)
-mask[itrain] = True
+    Accuracy of training set: 0.65
+    Accuracy of test set: 0.65
 
-X_train=X_rev[mask]
-y_train=y[mask]
-
-X_test=X_rev[~mask]
-y_test=y[~mask]
-
-
-ntopics=5    
-dictionary = gensim.corpora.Dictionary.load('dictionary.gensim')
-corpus = pickle.load(open('corpus.pkl', 'rb'))
-ldan5 = gensim.models.ldamodel.LdaModel.load('model{0}.gensim'.format(ntopics))
-
-
-gensim_lda_extractFeature=FunctionTransformer(lambda x: gensim_lda_feature(
-    x,dictionary,corpus,ntopics,ldan5),validate=False)
-
-steps=[('gensimLDA',gensim_lda_extractFeature),
-       ('clf',MultinomialNB())]
-res_lda_gsm_n5=run_pipeline(steps,X_train,y_train,X_test,y_test)
-```
-
-    Accuracy of training set: 0.53
-    Accuracy of test set: 0.53
-    
     Confusion Matrix:
-     [[21223 25025     0]
-     [ 8387 47363     0]
-     [ 1602 25240     0]]
-    
+     [[81921   671]
+     [43858  2390]]
+
     Classificatio Report:
                   precision    recall  f1-score   support
-    
-              0       0.68      0.46      0.55     46248
-              1       0.49      0.85      0.62     55750
-              2       0.00      0.00      0.00     26842
-    
-    avg / total       0.45      0.53      0.46    128840
-    
-The 5-topic gensim LDA topic features has similar average performace as that of sklearn LDA topic features. Both couldn't predict for the 'excellent' class. Instead, a minority (6%) of 'excellent' is misclassifed as 'poor' and the others (94%) are misclassified as 'good' according to the confusion matrix. We also have results for larger number of topics as listed below.
-    
-    ntopics=50
-    Perplexity: -7.58
-    Accuracy of training set: 0.51
-    Accuracy of test set: 0.52
 
-     Confusion Matrix:
-     [[16558 29690     0]
-     [ 5815 49935     0]
-     [ 1166 25673     3]]
+              0       0.65      0.99      0.79     82592
+              1       0.78      0.05      0.10     46248
 
-     Classificatio Report:
+    avg / total       0.70      0.65      0.54    128840    
+    
+    
+We also have results for larger number of topics as listed below.
+    
+    ntopics=10
+    Accuracy of training set: 0.65
+    Accuracy of test set: 0.65
+
+    Confusion Matrix:
+     [[82019   573]
+     [44721  1527]]
+
+    Classificatio Report:
                   precision    recall  f1-score   support
 
-              0       0.70      0.36      0.47     46248
-              1       0.47      0.90      0.62     55750
-              2       1.00      0.00      0.00     26842
+              0       0.65      0.99      0.78     82592
+              1       0.73      0.03      0.06     46248
 
-    avg / total       0.67      0.52      0.44    128840
-
-    
-    ntopics=80
-    Perplexity: -10.65
-    Accuracy of training set: 0.50
-    Accuracy of test set: 0.51
-
-     Confusion Matrix:
-     [[13894 32354     0]
-     [ 4210 51540     0]
-     [  818 26024     0]]
-
-     Classificatio Report:
-                  precision    recall  f1-score   support
-
-              0       0.73      0.30      0.43     46248
-              1       0.47      0.92      0.62     55750
-              2       0.00      0.00      0.00     26842
-
-    avg / total       0.47      0.51      0.42    128840
-    
-    
-    ntopics=100
-    Perplexity: -13.83
-    Accuracy of training set: 0.49
-    Accuracy of test set: 0.50
-
-     Confusion Matrix:
-     [[12269 33979     0]
-     [ 3709 52041     0]
-     [  726 26116     0]]
-
-     Classificatio Report:
-                  precision    recall  f1-score   support
-
-              0       0.73      0.27      0.39     46248
-              1       0.46      0.93      0.62     55750
-              2       0.00      0.00      0.00     26842
-
-    avg / total       0.46      0.50      0.41    128840
-
-The perplexity decreases as the number of topics increases. But the best accuracy of the test set is given by the 5-topic model. The 50-topic model has the best average precision. It sucessfully predict 'excellent' as 'excellent' although the recall is nearly negligible. 
-
+    avg / total       0.68      0.65      0.53    128840
 
 
 ##  Compare Model Performance <a class="anchor" id="Compare-Model-Performance"></a>
-<div>
-<table border="0.4" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>test_accuracy</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>bow</th>
-      <td>0.61</td>
-    </tr>
-    <tr>
-      <th>bow_GridSearch</th>
-      <td>0.62</td>
-    </tr>
-    <tr>
-      <th>bow_Classifier_NB</th>
-      <td>0.62</td>
-    </tr>
-    <tr>
-      <th>bow_Classifier_LR</th>
-      <td>0.63</td>
-    </tr>
-    <tr>
-      <th>bow_Classifier_SGD</th>
-      <td>0.63</td>
-    </tr>
-    <tr>
-      <th>tfidf_NB</th>
-      <td>0.62</td>
-    </tr>
-    <tr>
-      <th>tfidf_LR</th>
-      <td>0.63</td>
-    </tr>
-    <tr>
-      <th>tfidf_chi</th>
-      <td>0.62</td>
-    </tr>
-    <tr>
-      <th>lda</th>
-      <td>0.53</td>
-    </tr>
-    <tr>
-      <th>lda_gensim_n5</th>
-      <td>0.53</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+We plot the ROC curve for evaluation of model performances. AUC is the size of area under the plotted curve. In ROC (Receiver operating characteristic) curve, true positive rates are plotted against false positive rates. The closer AUC of a model is getting to 1, the better the model is.
 
+![png](img/output_189_0.png)
 
-Print classification report
-
-    bow: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.70      0.66      0.68     46248
-              1       0.57      0.60      0.59     55750
-              2       0.53      0.52      0.53     26842
-    
-    avg / total       0.61      0.61      0.61    128840
-    
-    bow_GridSearch: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.71      0.68      0.70     46248
-              1       0.57      0.70      0.63     55750
-              2       0.60      0.38      0.46     26842
-    
-    avg / total       0.63      0.62      0.62    128840
-    
-    bow_Classifier_NB: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.72      0.66      0.69      46248
-              1       0.56      0.75      0.64      55750
-              2       0.65      0.29      0.40      26842
-    
-    avg / total       0.64      0.62      0.61      128840
-    
-    bow_Classifier_LR: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.71      0.72      0.71      46248
-              1       0.58      0.71      0.64      55750
-              2       0.64      0.32      0.43      26842
-    
-    avg / total       0.64      0.63      0.62      128840
-    
-    bow_Classifier_SGD: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.73      0.70      0.71      46248
-              1       0.57      0.73      0.64      55750
-              2       0.64      0.32      0.42      26842
-    
-    avg / total       0.64      0.63      0.62      128840
-    
-    tfidf_NB: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.71      0.68      0.70     46248
-              1       0.57      0.72      0.64     55750
-              2       0.63      0.32      0.43     26842
-    
-    avg / total       0.63      0.62      0.61    128840
-    
-    tfidf_LR: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.70      0.73      0.72     46248
-              1       0.58      0.67      0.62     55750
-              2       0.60      0.39      0.47     26842
-    
-    avg / total       0.63      0.63      0.62    128840
-    
-    tfidf_chi: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.73      0.66      0.69     46248
-              1       0.56      0.77      0.65     55750
-              2       0.68      0.25      0.37     26842
-    
-    avg / total       0.65      0.62      0.61    128840
-    
-    lda_n5: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.68      0.45      0.54     46248
-              1       0.49      0.86      0.62     55750
-              2       0.00      0.00      0.00     26842
-    
-    avg / total       0.46      0.53      0.46    128840
-    
-    lda_gensim_n5: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.68      0.46      0.55     46248
-              1       0.49      0.85      0.62     55750
-              2       0.00      0.00      0.00     26842
-    
-    avg / total       0.45      0.53      0.46    128840
-        
+Concerning texts, the Tf-idf vectorized features as inputs give the best model performance. 
 
 
 # Improve Model Performance <a class="anchor" id="Improve-Model-Performance"></a>
