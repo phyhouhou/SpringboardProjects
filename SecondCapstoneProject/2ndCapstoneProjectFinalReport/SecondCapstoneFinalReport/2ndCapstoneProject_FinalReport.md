@@ -29,14 +29,12 @@
     * [Use sklearn LDA Document Topics for Prediction](#Use-sklearn-LDA-Document-Topics-for-Prediction)
     * [Use Gensim LDA Document Topics for Prediction](#Use-Gensim-LDA-Document-Topics-for-Prediction)
     * [Compare Model Performance](#Compare-Model-Performance)
-8. [Improve Model Performance](#Improve-Model-Performance)
-    * [Poor or not](#Poor-or-not)
     * [Enrich Predictors with Categorical and Numerical Features](#Enrich-Predictors)
-9. [Conclusions](#Conclusions)
+8. [Conclusions](#Conclusions)
 
-10. [Next Steps](#Next-Steps)
+9. [Next Steps](#Next-Steps)
 
-11. [Deliverables](#Deliverables)
+10. [Deliverables](#Deliverables)
         
         
 # Introduction <a class="anchor" id="Introduction"></a>
@@ -2122,78 +2120,57 @@ We plot the ROC curve for evaluation of model performances. AUC is the size of a
 
 Concerning texts, the Tf-idf vectorized features as inputs give the best model performance. 
 
+### Pick Classifiers
+As indicated in the ROC curve above, concerning texts, the Tf-idf vectorized features as inputs give the best model performance. We will take Tf-idf vectorized features to represent review texts. We will train the model using different classifiers aiming to improve model performance furthermore.
 
-# Improve Model Performance <a class="anchor" id="Improve-Model-Performance"></a>
-According to our exploratory data analysis, the reviewer score is corrected with features like 'Trip_Type' and 'Num_Nights' etc. We will include those categorical and numerical features in this section to check whether it will improve the model performance. Since it's more important to know whether a hotel is reviewed as poor/not poor than to know that a hotel is reviewed as good/excellent. Let's categorize the reviews into two types by the 0.33 quantile of reviewers' score.
-
-## Poor or not <a class="anchor" id="Poor-or-not"></a>
-
-We combine numerical features with categorical and text features. Then we split the reviewer score into two buckets, i.e., those above 7.9 (reviewer score at 0.33 quantile) are 'good', the others are 'poor'.
+![png](img/output_193_0.png)
 
 
-```python
-#Extract numerical columns
-data=pd.read_csv('data/htl_clean.csv')
-col_num=['Total_Number_of_Reviews_Reviewer_Has_Given','Review_Total_Positive_Word_Counts',
-          'Review_Total_Negative_Word_Counts','Num_Nights']
-cthresh=10
-idx=(data['Review_Total_Positive_Word_Counts']+data['Review_Total_Negative_Word_Counts'])<cthresh
-df_num=data[~idx][col_num].reset_index(drop=True)
-
-#Combine features
-df_ml=pd.concat([df_txt,df_num],axis=1)
-
-#Split reviewer score into two buckets
-thresh=np.percentile(df_ml.Reviewer_Score,33)#df_ml.Reviewer_Score.quantile(0.33)
-print('threshold of poor|good', thresh)
-df_ml['label']=np.where(df_ml.Reviewer_Score>thresh,'Good','Poor')
-```
-
-    threshold of poor|good 7.9
-
-Below is a bar plot of reviewer score falling into the two buckets.
-
-![png](img/output_131_00.png)
-
-
-We first use the bag-of-words features for binary classification.
-
+### Grid Search Hyperparameters
+We define a customized gridsearch function and specify our search parameters for the LogisticRegression model. 
 
 ```python
-lab_bin=LabelBinarizer()
-y=lab_bin.fit_transform(df_ml['label'])
+#Define a function for GridSearch
+def my_grid_search(model,search_params,X_train,y_train,X_test,y_test,nfolds=5,scoring='accuracy'):
+    gsmodel= GridSearchCV(model, param_grid=search_params,scoring=scoring,cv=nfolds)
+    gsmodel=gsmodel.fit(X_train,y_train)
+                
+    y_pred=gsmodel.predict(X_test)
+    print('Best paras:\n')
+    pprint(gsmodel.best_params_)
+    print('\nBest score: %.2f' % gsmodel.best_score_)
+    print('\nClassification report: \n',classification_report(y_test,y_pred))
+    
+    return gsmodel,gsmodel.best_params_,gsmodel.best_score_,classification_report(y_test,y_pred)
 
-X_train, X_test, y_train, y_test = train_test_split(df_ml['Rev_Lemmatized'], y,test_size=0.3,
-    random_state=100)
+nfolds=5
+search_params = dict(
+                  clf__C=[0.1,1,10,20],
+                  clf__penalty=['l1','l2'],
+                 )
 
-bow_steps_bin=[('vectorise',CountVectorizer(
-                                        min_df=10,
-                                        stop_words='english',
-                                        token_pattern='[a-zA-Z]{3,}')),
-         ('clf',MultinomialNB())]
-
-bow_pipe_bin,bow_training_accuracy_bin, bow_test_accuracy_bin, bow_conf_mtrix_bin, bow_class_report_bin=run_pipeline(bow_steps_bin,X_train,y_train,X_test,y_test)
+my_grid_search(lg_pl[0],search_params,Xtrain,ytrain,Xtest,ytest,nfolds,scoring='f1')
 ```
 
-    Accuracy of training set: 0.78
-    Accuracy of test set: 0.78
-    
-    Confusion Matrix:
-     [[69757 12835]
-     [15755 30493]]
-    
-    Classificatio Report:
+    Best paras:
+
+    {'clf__C': 10, 'clf__penalty': 'l2'}
+
+    Best score: 0.70
+
+    Classification report: 
                   precision    recall  f1-score   support
-    
-              0       0.82      0.84      0.83     82592
-              1       0.70      0.66      0.68     46248
-    
-    avg / total       0.78      0.78      0.78    128840
-    
-The model performs much better in accuracy, precision and recall.
+
+              0       0.82      0.88      0.85     82592
+              1       0.75      0.66      0.70     46248
+
+    avg / total       0.80      0.80      0.80    128840
+
+The grid search procedure doesn't improve the model performance furthermore. 
 
 ## Enrich Predictors with Categorical and Numerical Features <a class="anchor" id="Enrich-Predictors"></a>
-We extract categorical columns and numerical columns to enrich predictor features. We split the data into training and test set. We fill missing values in categorical columns with 'None'. We impute missing values in numerical features by its median. Since the Tfidf vectorizer works better than bag-of-word features and LDA topic features, we adopt the Tfidf vectorized features to numerically represent review texts. 
+
+According to our exploratory data analysis, the reviewer score is corrected with features like 'Trip_Type' and 'Num_Nights' etc. We will include those categorical and numerical features to enrich predictor features in this section to check whether it will improve the model performance. We split the data into training and test set. We fill missing values in categorical columns with 'None'. We impute missing values in numerical features by its median. Since the Tfidf vectorizer works better than bag-of-word features and LDA topic features, we adopt the Tfidf vectorized features to numerically represent review texts and choose LogisticRegression() as our classifier. 
 
 
 ```python
@@ -2201,252 +2178,47 @@ col_categories=['Review_Month', 'Hotel_City', 'Trip_Type','Traveler_Type']
 df_ml.Trip_Type.fillna('None',inplace=True)
 
 col_num=['Total_Number_of_Reviews_Reviewer_Has_Given','Review_Total_Positive_Word_Counts',
-          'Review_Total_Negative_Word_Counts','Num_Nights']
+          'Review_Total_Negative_Word_Counts','Len_LemRev_char']
 
 X=df_ml[col_categories+col_num+['Rev_Lemmatized']]
 y=lab_bin.fit_transform(df_ml['label'])
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y,test_size=0.3,random_state=100)
 ```
 
-Use the FunctionTransformer to create an object out of a Python function that help select subsets of data in a way that plays nicely with pipelines.
+Use the FunctionTransformer to create an object out of a Python function that help select subsets of data in a way that plays nicely with pipelines. Basically, we extract the categorical features and convert them to numerical values by get_dummies() method, we extract texts and perform tf_idf vectorization and we extract numerical features and impute missing values with its medians. All the features can be joint together by 'FeatureUnion', ready to be used for the pipeline. We choose logistic regression classifier for prediction. 
 
-
-```python
-get_text_data=FunctionTransformer(lambda x: x['Rev_Lemmatized'],validate=False)
-get_num_data=FunctionTransformer(lambda x: x[col_num],validate=False)
-get_cat_data=FunctionTransformer(lambda x: pd.get_dummies(x[col_categories]),validate=False)
-
-#Build text pipeline
-text_pipeline=Pipeline([('selector', get_text_data ),
-                        ('vectorise',TfidfVectorizer(
-                                        min_df=10,
-                                        ngram_range=(1,2),
-                                        stop_words='english',
-                                        token_pattern='[a-zA-Z]{3,}')),
-                       #('dim_red',SelectKBest(chi2,k=5000))
-                       ])
-#Build cat pipeline
-cat_pipeline=Pipeline([('selector',get_cat_data),             
-                      ])
-
-#Build num pipeline
-num_pipeline=Pipeline([('selector',get_num_data),
-                        ('imputer',Imputer(strategy='median')),
-                   ('interact',PolynomialFeatures(degree=2,interaction_only=True,include_bias=False)),                   ('scaler',MinMaxScaler()),
-                      ])
-```
-
-All the features can be joint together by 'FeatureUnion', ready to be used for the pipeline. We choose differetn classifiers for prediction. 
-
-1. Use MultinomialNB() classifier for prediction
-
-```python
-steps_NB_bin=[
-    ('union',FeatureUnion([('cat',cat_pipeline),('num',num_pipeline),('text',text_pipeline)])),
-     ('clf',MultinomialNB())
-    ]
-res_NB_bin=run_pipeline(steps_NB_bin,X_train,y_train,X_test,y_test)
-```
-
-    Accuracy of training set: 0.81
-    Accuracy of test set: 0.79
-    
-    Confusion Matrix:
-     [[72396 10196]
-     [16746 29502]]
-   
-2. Use LogisticRegression() classifier for prediction
-
-```python
-steps_LR_bin=[
-    ('union',FeatureUnion([('cat',cat_pipeline),('num',num_pipeline),('text',text_pipeline)])),
-    ('clf',LogisticRegression())
-]
-
-res_LR_bin=run_pipeline(steps_LR_bin,X_train,y_train,X_test,y_test)
-```
-
-    Accuracy of training set: 0.84
+    Accuracy of training set: 0.82
     Accuracy of test set: 0.81
-    
+
     Confusion Matrix:
-     [[72633  9959]
-     [14568 31680]]
-    
+     [[72594  9998]
+     [14897 31351]]
 
-3. Use RandomForestClassifier() classifier for prediction
+    Classificatio Report:
+                  precision    recall  f1-score   support
 
-```python
-steps_RF_bin=[
-    ('union',FeatureUnion([('cat',cat_pipeline),('num',num_pipeline),('text',text_pipeline)])),    
-    ('clf',RandomForestClassifier())
-]
+              0       0.83      0.88      0.85     82592
+              1       0.76      0.68      0.72     46248
 
-res_RF_bin=run_pipeline(steps_RF_bin,X_train,y_train,X_test,y_test)
-```
-
-    Accuracy of training set: 0.98
-    Accuracy of test set: 0.77
-    
-    Confusion Matrix:
-     [[74504  8088]
-     [22064 24184]]
-
-4. Use LinearSVC() classifier for prediction
-
-```python
-steps_SVC_bin=[
-    ('union',FeatureUnion([('cat',cat_pipeline),('num',num_pipeline),('text',text_pipeline)])),
-    ('clf',LinearSVC())
-]
-
-res_SVC_bin=run_pipeline(steps_SVC_bin,X_train,y_train,X_test,y_test)
-```
-
-    Accuracy of training set: 0.88
-    Accuracy of test set: 0.79
-    
-    Confusion Matrix:
-     [[70754 11838]
-     [14990 31258]]
-    
-5. Use SGDClassifier() classifier for prediction
-
-```python
-steps_SGD_bin=[
-    ('union',FeatureUnion([('cat',cat_pipeline),('num',num_pipeline),('text',text_pipeline)])),
-    ('clf',SGDClassifier())
-]
-
-res_SGD_bin=run_pipeline(steps_SGD_bin,X_train,y_train,X_test,y_test)
-```
-
-    Accuracy of training set: 0.81
-    Accuracy of test set: 0.80
-    
-    Confusion Matrix:
-     [[72865  9727]
-     [15590 30658]]
-   
-
-### Improved Model Performance
+    avg / total       0.80      0.81      0.80    128840
 
 
-Accuracy score of the test set for each model:
-
-<div>
-<table border="0.4" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>test_accuracy</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>bow_text</th>
-      <td>0.78</td>
-    </tr>
-    <tr>
-      <th>Tfidf_Featunion_NB</th>
-      <td>0.79</td>
-    </tr>
-    <tr>
-      <th>Tfidf_Featunion_LR</th>
-      <td>0.81</td>
-    </tr>
-    <tr>
-      <th>Tfidf_Featunion_RF</th>
-      <td>0.77</td>
-    </tr>
-    <tr>
-      <th>Tfidf_Featunion_SVC</th>
-      <td>0.79</td>
-    </tr>
-    <tr>
-      <th>Tfidf_Featunion_SGD</th>
-      <td>0.80</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+![png](img/output_207_0.png)
 
 
-
-
-
-Print classification report
-
-
-    bow_text: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.82      0.84      0.83     82592
-              1       0.70      0.66      0.68     46248
-    
-    avg / total       0.78      0.78      0.78    128840
-    
-    Tfidf_Featunion_NB: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.81      0.88      0.84     82592
-              1       0.74      0.64      0.69     46248
-    
-    avg / total       0.79      0.79      0.79    128840
-    
-    Tfidf_Featunion_LR: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.83      0.88      0.86     82592
-              1       0.76      0.69      0.72     46248
-    
-    avg / total       0.81      0.81      0.81    128840
-    
-    Tfidf_Featunion_RF: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.77      0.90      0.83     82592
-              1       0.75      0.52      0.62     46248
-    
-    avg / total       0.76      0.77      0.75    128840
-    
-    Tfidf_Featunion_SVC: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.83      0.86      0.84     82592
-              1       0.73      0.68      0.70     46248
-    
-    avg / total       0.79      0.79      0.79    128840
-    
-    Tfidf_Featunion_SGD: 
-    
-                 precision    recall  f1-score   support
-    
-              0       0.82      0.88      0.85     82592
-              1       0.76      0.66      0.71     46248
-    
-    avg / total       0.80      0.80      0.80    128840
     
 # Conclusions <a class="anchor" id="Conclusions"></a> 
 We loaded hotel reviews data and performed data cleaning and data wrangling. According to our EDA, there are 515212 reviews for 1493 hotels located in 6 cities (over a half of hotels are located in London) of 6 countries in Europe by reviewers either on leisure trip (80% for leisure trip) or business trip (20% for business trip) from 227 distinct countries. Couples (around 50% of travelers) are the most common travelers types among the 6 types (around 20% are solo travelers, others are groups, families or friends). We've determined the most popular hotels by considering its 'Average_Score' and 'Total_Number_of_Reviews'. We also performed time series analysis on the reviewer score and we find that the average reviewer score is higher in January and low in October. We also find that reviewers on a leisure trip tend to rate higher than those on a business trip and on average the longer traveler stayed the lower the score they give. In the topic modeling part, we build LDA models and visualize the topics generated from review texts. These insights from EDA about patterns/trends/importance of features help us in building machine learning models to predict labels of reviewer scores.<br>
 
-We build the machine learning models with vectorized numerically text features (bag-of-word features, tfidf features, LDA topic features). We also performed grid search on hyperparameters and different classifiers. We visualized the performances of classifiers in view of accuracy of the test set. It shows that for predicting multi classifications, logistic regression classifier with bag-of-word or tfidf features can improve accuracy from 43% (achieved by just predicting the majority class, that is, ‘Good’) to 63%. The LDA topic features don't work well for prediction.<br> 
+Concerning the review texts, we've displayed word clouds and implemented topic modeling to answer the questio of what reviewrs are talking about in their reviews when they are happy and unhappy.<br>
 
-
-If we label reviewer score as ‘poor' (reviewer score lower than 0.33 quantile of overall reviewer scores) and ‘good’ (reviewer score above 0.33 quantile of overall reviewer scores), it is an unbalanced binary classification problem. We enrich text features by numerical features ('Num_nights'...) and categorical features ('Trip_Type'...). The best prediction is given by logistic regression classifier with Tfidf vectorized text features. It increases accuracy by 27% (from 64% achieved by just predicting the majority class, that is, ‘Good’ to 81% by logistic regression).
+If we label reviewer score as ‘poor' (reviewer score lower than 8.0) and ‘good’ (reviewer score above 8.0), it is an unbalanced binary classification problem. We build the machine learning models with vectorized numerical text features (bag-of-word features, tfidf features, LDA topic features). We also performed grid search on hyperparameters and different classifiers. We also enrich text features by numerical features ('Review_Total_Positive_Word_Counts', 'Review_Total_Negative_Word_Counts'...) and categorical features ('Trip_Type'...). We visualized the performances of classifiers in ROC-AUC curve. The best prediction is given by logistic regression classifier with Tfidf vectorized text features. It increases accuracy by 27% (from 64% achieved by just predicting the majority class, that is, ‘Good’ to 81% by logistic regression) and it increases AUC by 76% from 0.5 (dummy classifer) to 0.88.
 
 
 # Next Steps <a class="anchor" id="Next-Steps"></a> 
 
 1. How to improve accuracy?<br>
-Since review texts are the dominant predictors we propose to clean reviews furthermore by removing some most frequent words, correcting misspellings and removing words other than nouns and adjective words. This process might improve topic modelings. We also propose to add interactions between numerical feature, categorical features and text features to improve model performance. Another strategy is to implement undersampling or oversampling to improve the classification.
+Since review texts are the dominant predictors we propose to clean reviews furthermore by removing some most frequent words, correcting misspellings and removing words other than nouns and adjective words. This process might improve topic modelings.
+Instead of using only single words as features, it might help to include bigrams for future work. We also propose to add interactions between numerical feature, categorical features and text features to improve model performance. Another strategy is to implement undersampling or oversampling to improve the classification.
 
 2. Are review contents consistent with the rating scores?<br>
 We notice that some reviewers give very low score but posted both positive and negative aspects of the hotels while some reviewers post no negative reviews but score not that high, indicating they are unsatisfied to some extent but just not mentioning them. Are review contents consistent with the rating scores? How to quantify the consistency?
