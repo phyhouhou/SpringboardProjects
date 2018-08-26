@@ -8,5 +8,4 @@ The purpose of the capstone project is to anlyze what customers are talking abou
 
 * SecondCapstoneProject_NLP_ML.ipynb is the notebook where we carry out the NLP analysis and topic modeling process and develop machine learning models for prediciton.<br>
 
-* img contains imges used in the notebook.<br>
 
