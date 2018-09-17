@@ -256,7 +256,7 @@ The data wrangling and cleaning includes:<br>
 
 
 ```python
-#Proportion of missing values
+#Share of missing values
 hotel.isnull().sum()/len(hotel)
 ```
 
