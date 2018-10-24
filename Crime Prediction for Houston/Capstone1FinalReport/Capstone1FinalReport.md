@@ -845,6 +845,27 @@ It’s shown that in beat ‘19G10’, top 3 main proportions of crims are from 
 (ranking 2nd) and road/street (ranking 3rd). In beat ‘1A20’, 3 main proportion of crimes are from parking lot
 (ranking 1st), road (ranking 2nd)and residence (ranking 3rd).
 
+## Visualize in a map 
+We choose to display crime statistics on maps for the year 2017.
+
+### Choropleth map
+To create a choropleth, we need a geojson file to create the boundaries that match the Houston police districts in the data file. I found [a government open data](https://cohgis-mycity.opendata.arcgis.com/datasets/fb3bb02ec56c4bb4b9d0cf3b8b3e5545_4) website with a Shapefile that almost matches my needs. The next step is to convert the Shapefile into a geojson file. The easiest way is to use an [ogr2ogr web client](http://ogre.adc4gis.com).
+
+![title](images/choropleth17.png)
+Click [here](https://choropleth17.herokuapp.com/index.html) for an interactive visualization.
+
+
+### Heatmap with time series: Monthly
+
+Take 'Murder' for instance, we display the monthly occurences of 'Murder' in the Houston beats in 2017.
+
+![title](images/monthlyheatmap.png)
+Click [here](https://monthlyheatmap.herokuapp.com/index.html) for an interactive visualization.
+
+### Heatmap with Time Series: Hourly
+
+![title](images/hourlyHeatmap.png)
+Click [here](https://hourlyheatmap.herokuapp.com/index.html) for an interactive visualization.
 
 # Build machine learning models <a class="anchor" id="Model"></a>
 
