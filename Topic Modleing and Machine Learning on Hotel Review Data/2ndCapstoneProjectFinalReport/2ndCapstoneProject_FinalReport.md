@@ -2168,6 +2168,98 @@ my_grid_search(lg_pl[0],search_params,Xtrain,ytrain,Xtest,ytest,nfolds,scoring='
 
 The grid search procedure doesn't improve the model performance furthermore. 
 
+### What are the most useful word features?
+
+```python
+tfidf_vec = TfidfVectorizer(min_df=10,
+                            ngram_range=(1, 2),
+                            stop_words='english',
+                            token_pattern='[a-zA-Z]{3,}',
+                           )
+
+X, y = make_xy(df_txt,tfidf_vec)
+selectf=SelectKBest(chi2, k=5000)
+X_new = selectf.fit_transform(X, y)
+
+
+itrain, _ = train_test_split(range(df_txt.shape[0]), test_size=0.3,random_state=100)
+mask = np.zeros(df_txt.shape[0], dtype=np.bool)
+mask[itrain] = True
+
+
+
+Xtrain=X_new[mask]
+ytrain=y[mask]
+Xtest=X_new[~mask]
+ytest=y[~mask]
+
+
+steps=[
+       ('clf',LogisticRegression())
+]
+
+
+res_tfidf_LR_model2=run_pipeline(steps,Xtrain,ytrain,Xtest,ytest)            
+
+
+
+```
+
+    Accuracy of training set: 0.81
+    Accuracy of test set: 0.80
+    
+    Confusion Matrix:
+     [[72664  9928]
+     [15879 30369]]
+    
+    Classificatio Report:
+                  precision    recall  f1-score   support
+    
+              0       0.82      0.88      0.85     82592
+              1       0.75      0.66      0.70     46248
+    
+    avg / total       0.80      0.80      0.80    128840
+    
+
+
+
+```python
+fnames=tfidf_vec.get_feature_names()
+words=np.asarray([fnames[i] for i in selectf.get_support(indices=True)])
+model=res_tfidf_LR_model2[0].named_steps['clf']
+cof=model.coef_[0].T
+```
+
+
+```python
+idx=np.argsort(cof)[::-1]
+best10words=pd.DataFrame({'coef':cof[idx[:10]]},index=words[idx[:10]]).sort_values('coef')
+best10words.plot(kind='barh',rot=0,legend=False)
+plt.xlabel('Feature Coef')
+plt.ylabel('Feature')
+plt.title('Top 10 Words');
+
+
+```
+
+
+![png](output_147_0.png)
+
+
+
+```python
+worst10words=pd.DataFrame({'coef':cof[idx[-10:]]},index=words[idx[-10:]])
+worst10words.plot(kind='barh',rot=0,legend=False)
+plt.xlabel('Feature Coef')
+plt.ylabel('Feature')
+plt.title('Top 10 Worst Words');
+```
+
+
+![png](output_148_0.png)
+
+
+
 ## Enrich Predictors with Categorical and Numerical Features <a class="anchor" id="Enrich-Predictors"></a>
 
 According to our exploratory data analysis, the reviewer score is corrected with features like 'Trip_Type' and 'Num_Nights' etc. We will include those categorical and numerical features to enrich predictor features in this section to check whether it will improve the model performance. We split the data into training and test set. We fill missing values in categorical columns with 'None'. We impute missing values in numerical features by its median. Since the Tfidf vectorizer works better than bag-of-word features and LDA topic features, we adopt the Tfidf vectorized features to numerically represent review texts and choose LogisticRegression() as our classifier. 
