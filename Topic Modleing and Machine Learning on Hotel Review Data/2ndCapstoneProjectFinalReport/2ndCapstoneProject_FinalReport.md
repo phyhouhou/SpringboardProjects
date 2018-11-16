@@ -2243,7 +2243,7 @@ plt.title('Top 10 Words');
 ```
 
 
-![png](output_147_0.png)
+![png](img/output_147_0.png)
 
 
 
@@ -2256,7 +2256,7 @@ plt.title('Top 10 Worst Words');
 ```
 
 
-![png](output_148_0.png)
+![png](img/output_148_0.png)
 
 
 
