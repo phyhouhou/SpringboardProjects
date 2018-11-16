@@ -2257,7 +2257,7 @@ plt.title('Top 10 Worst Words');
 
 
 ![png](img/output_148_0.png)
-
+![png](img/output_207_0.png)
 
 
 ## Enrich Predictors with Categorical and Numerical Features <a class="anchor" id="Enrich-Predictors"></a>
